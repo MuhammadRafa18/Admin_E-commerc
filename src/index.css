@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+ --font-sans: 'Sora', 'sans-serif';
+ --color-gray-text: #7A7A7A;
+ --color-bg-card: #FCFBF9;
+ --color-gray-secondbackground: #FDFDFD;
+ --color-gray-line: #D8DBDB;
+ --shadow-xl-full:  0 0 20px rgba(0, 0, 0, 0.25) ;
+ --shadow-normal-full:  0 0 6px rgba(0, 0, 0, 0.1) ;
+}
+
+body {
+  @apply font-sans;
+}
