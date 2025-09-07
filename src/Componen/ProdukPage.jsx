@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { AdminLayout } from "./AdminLayout";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { ProdukContext } from "../Context/ProdukProvider";
 
 export const ProdukPage = () => {
@@ -19,7 +19,7 @@ export const ProdukPage = () => {
       setListProduk(UpadateList)
     }
   }
-console.log(ListProduk)
+
   return (
     <AdminLayout>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">

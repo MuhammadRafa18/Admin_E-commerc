@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Prev from "../assets/panah.svg";
 import dropdown from "../assets/panah.svg";
 import { ProdukContext } from "../Context/ProdukProvider";
 
 export const FormUser = () => {
-  const { User, setUser, setListUser, ListUser } = useContext(ProdukContext);
+  const { User, setUser, setListUser, ListUser,isLogin,loading } = useContext(ProdukContext);
   const navigate = useNavigate();
   const HandleForm = (e) => {
     e.preventDefault();
@@ -47,6 +47,8 @@ export const FormUser = () => {
    navigate(`/User`)
     }
   };
+ 
+  
   // console.log(ListUser);
 
   return (
@@ -124,7 +126,7 @@ export const FormUser = () => {
               >
                 <option value="">Pilih Role</option>
                 <option value="Admin">Admin</option>
-                <option value="User">User</option>
+                <option value="SuperAdmin">SuperAdmin</option>
               </select>
             </div>
           </div>

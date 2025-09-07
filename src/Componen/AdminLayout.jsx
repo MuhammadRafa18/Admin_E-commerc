@@ -1,8 +1,20 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router';
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ProdukContext } from '../Context/ProdukProvider';
 
 export const AdminLayout = ({children}) => {
   const [open, setOpen] = useState(true);
+  const { isLogin, setIslogin,loading } = useContext(ProdukContext)
+  const location = useLocation();
+ const navigate = useNavigate();
+  const handleLogout = () => {
+  if (window.confirm("Mau log out?")) {
+    setIslogin(null);   // kosongkan session
+    navigate("/Login"); // arahkan ke login
+  }
+};
+  
+
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -26,12 +38,15 @@ export const AdminLayout = ({children}) => {
               <Link to="/ProdukPage" className="block px-2 py-1  hover:underline">
                 Produk
               </Link>
-              <Link to="/User" className="block px-2 py-1  hover:underline">
+              {isLogin === "SuperAdmin" ?
+                <Link to="/User" className="block px-2 py-1  hover:underline">
                 User
               </Link>
+               : null}
             </div>
           )}
         </nav>
+        <button onClick={handleLogout}>log out</button>
       </aside>
 
       {/* Main */}

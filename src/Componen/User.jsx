@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { AdminLayout } from './AdminLayout'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import { ProdukContext } from '../Context/ProdukProvider'
 
 export const User = () => {
-    const {ListUser,User,setUser, setListUser} = useContext(ProdukContext)
+    const {ListUser,User,setUser, setListUser,isLogin,loading} = useContext(ProdukContext)
     const navigate = useNavigate()
     const HandleEdit = (id) => {
       const Edit = ListUser.find((item) => item.id === id)
@@ -15,6 +15,8 @@ export const User = () => {
         const UpdateUser = ListUser.filter((item) => item.id !== id)
         setListUser(UpdateUser)
     }
+   
+    
   return (
     <AdminLayout>
          <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
@@ -40,6 +42,9 @@ export const User = () => {
                    Role
                  </th>
                  <th scope="col" className="text-center px-6 py-3">
+                   Password
+                 </th>
+                 <th scope="col" className="text-center px-6 py-3">
                    Action
                  </th>
                </tr>
@@ -53,6 +58,7 @@ export const User = () => {
                  <td className="text-center px-6 py-4">{item.name}</td>
                  <td className="text-center px-6 py-4">{item.phone}</td>
                  <td className="text-center px-6 py-4">{item.role}</td>
+                 <td className="text-center px-6 py-4">{item.password}</td>
                  <td className="text-center px-6 py-4 space-x-2">
                    <button onClick={() => HandleEdit(item.id)} className="bg-green-500 text-white p-2 rounded-xl cursor-pointer">
                      Edit

@@ -7,6 +7,8 @@ export const ProdukProvider = ({ children }) => {
   const [ListUser, setListUser] = useState([]);
   const [Produk, setProduk] = useState({});
   const [User,setUser] = useState({});
+  const [isLogin,setIslogin] = useState(null);
+   const [loading,setLoading] = useState(true);
 
   useEffect(() => {
     const save = localStorage.getItem("ListProduk");
@@ -28,6 +30,19 @@ export const ProdukProvider = ({ children }) => {
         setListUser([]);
       }
     }
+    
+    const Login = localStorage.getItem("isLogin")
+    if(Login){
+      try{
+        setIslogin(JSON.parse(Login))
+
+      } catch {
+        console.error("Login error :")
+        setIslogin(null)
+      }
+      
+    }
+    setLoading(false)
   }, []);
 
   useEffect(() => {
@@ -37,9 +52,12 @@ export const ProdukProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("ListUser", JSON.stringify(ListUser));
   },[ListUser])
+  useEffect(() => {
+    localStorage.setItem("isLogin",JSON.stringify(isLogin));
+  },[isLogin])
 
   return (
-  <ProdukContext.Provider value={{ListProduk, setListProduk , Produk , setProduk , User, setUser, ListUser , setListUser}}>
+  <ProdukContext.Provider value={{ListProduk, setListProduk , Produk , setProduk , User, setUser, ListUser , setListUser, isLogin,setIslogin,loading,setLoading}}>
     {children}
   </ProdukContext.Provider>
   )

@@ -1,0 +1,73 @@
+import React, { useContext, useEffect, useState } from 'react'
+import { ProdukContext } from '../Context/ProdukProvider';
+import { useNavigate } from 'react-router-dom';
+
+export const Login = () => {
+ const [account,setAccount] = useState();
+ const { ListUser,setIslogin,isLogin,loading } = useContext(ProdukContext)
+ const navigate = useNavigate();
+ const HandleLogin = (e) => {
+    e.preventDefault();
+    const data = {
+        email:account.email,
+        password:account.password
+    };
+   const Check = ListUser.find((item) => item.email === data.email && item.password === data.password ) 
+   if(Check){
+      setIslogin(Check.role)
+      navigate(`/`)
+   }else {
+       alert("Email dan password salah")
+   } 
+ }
+
+ useEffect(() => {
+    if(loading) return;
+    if(isLogin === "Admin" || isLogin === "SuperAdmin"){
+        navigate(`/`)
+    }
+ },[isLogin])
+ 
+
+  return (
+     <section className="min-h-screen flex items-center justify-center bg-gray-secondbackground">
+        <div className="w-lg bg-white rounded-xl shadow px-10 py-6">
+          <h1 className="text-4xl  text-center mb-16">Sign In</h1>
+          <form className="text-base" onSubmit={HandleLogin}>
+            {/* <!-- Email --> */}
+            <label className="block">
+              <span className="sr-only">E-mail</span>
+              <input
+                type="email"
+                name="email"
+                placeholder="E-mail"
+                required
+                className="w-full border rounded-md mb-4 px-5 py-3 placeholder-black"
+                onChange={(e) => setAccount({...account,email:e.target.value})}
+              />
+            </label>
+            {/* <!-- Password --> */}
+            <label className="block">
+              <span className="sr-only">Password</span>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+                className="w-full border rounded-md  px-5 py-3 placeholder-black"
+                onChange={(e) => setAccount({...account,password:e.target.value})}
+
+              />
+            </label>
+            {/* <!-- Submit Button --> */}
+            <button
+              type="submit"
+              className="w-full bg-black text-white py-4 mt-6 rounded-full cursor-pointer"
+            >
+              Sign In
+            </button>
+          </form>
+        </div>
+      </section>
+  )
+}
