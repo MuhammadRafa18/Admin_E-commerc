@@ -1,14 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
 import Prev from "../assets/panah.svg";
 import dropdown from "../assets/panah.svg";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { ProdukContext } from "../Context/ProdukProvider";
+import axios from "axios";
 
 export const FormProduk = () => {
   const { ListProduk, setListProduk, Produk, setProduk } =
     useContext(ProdukContext);
   const navigate = useNavigate();
   const [image, setimage] = useState(null);
+  const {id} = useParams();
+  useEffect(() => {
+       if(id){
+        axios
+        .get(`https://dummyjson.com/products/${id}`)
+        .then((res) => setProduk(res.data.products))
+       }
+  },[id])
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -21,59 +30,51 @@ export const FormProduk = () => {
     reader.readAsDataURL(file);
   };
 
-  const HandleForm = (e) => {
+  const HandleForm = async (e) => {
     e.preventDefault();
+    try{
+     const formData = new FormData();
+    formData.append("id", Produk.id || Date.now())
+    formData.append("gambar",  image || Produk.gambar || item.gambar,)
+    formData.append("name", Produk.name || "");
+    formData.append("type", Produk.type || "");
+    formData.append("category", Produk.category || "");
+    formData.append("price", Produk.price || 0);
+    formData.append("size", Produk.size || "");
+    formData.append("rating", Produk.rating || 0);
+    formData.append("stok", Produk.stok || 0);
 
-    if (Produk.id) {
-      const Update = ListProduk.map((item) =>
-        item.id === Produk.id
-          ? {
-              id: Produk.id,
-              gambar: image || Produk.gambar || item.gambar,
-              name: Produk.name,
-              type: Produk.type,
-              category: Produk.category,
-              price: Produk.price,
-              size: Produk.size,
-              rating: Produk.rating,
-              stok: Produk.stok,
-            }
-          : item
+
+   if (Produk.id) {
+      // UPDATE
+      await axios.put(
+        `http://localhost:3000/produk/${Produk.id}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
-      setListProduk(Update);
-      setProduk({
-        name: "",
-        price: "",
-        size: "",
-        rating: "",
-        stok: "",
-      });
-      setimage(null);
-      navigate(`/ProdukPage`);
+      alert("Produk berhasil diupdate ✅");
     } else {
-      const Data = {
-        id: Date.now(),
-        gambar: image,
-        name: Produk.name,
-        type: Produk.type,
-        category: Produk.category,
-        price: Produk.price,
-        size: Produk.size,
-        rating: Produk.rating,
-        stok: Produk.stok,
-      };
-      setListProduk([...ListProduk, Data]);
-      setProduk({
-        name: "",
-        price: "",
-        size: "",
-        rating: "",
-        stok: "",
+      // CREATE
+      await axios.post("http://localhost:3000/produk", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      setimage(null);
-      navigate("/ProdukPage");
-      //   console.log(Produk);
+      alert("Produk berhasil ditambahkan ✅");
     }
+     setProduk({
+      name: "",
+      price: "",
+      size: "",
+      rating: "",
+      stok: "",
+    });
+    setimage(null);
+    navigate("/ProdukPage");
+  } catch (err) {
+    console.error("Error saat create/update produk:", err);
+    alert("Gagal menyimpan produk ❌");
+  }
   };
 
   return (

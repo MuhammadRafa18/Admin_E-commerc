@@ -1,20 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ProdukContext } from '../Context/ProdukProvider';
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ProdukContext } from "../Context/ProdukProvider";
 
-export const AdminLayout = ({children}) => {
-  const [open, setOpen] = useState(true);
-  const { isLogin, setIslogin,loading } = useContext(ProdukContext)
+export const AdminLayout = ({ children }) => {
+  const [openData, setOpenData] = useState(false);
+  const [openHome, setOpenHome] = useState(false);
+  const [openAbout, setOpenAbout] = useState(false);
+  const [openFaq, setopenFaq] = useState(false);
+  const { isLogin, setIslogin, loading } = useContext(ProdukContext);
   const location = useLocation();
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleLogout = () => {
-  if (window.confirm("Mau log out?")) {
-    setIslogin(null);   // kosongkan session
-    navigate("/Login"); // arahkan ke login
-  }
-};
-  
-
+    if (window.confirm("Mau log out?")) {
+      setIslogin(null); // kosongkan session
+      navigate("/Login"); // arahkan ke login
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -25,24 +26,133 @@ export const AdminLayout = ({children}) => {
         </div>
         <nav className="flex-1 p-4 space-y-2">
           <button
-            onClick={() => setOpen(!open)}
+            onClick={() => setOpenData(!openData)}
             className="flex justify-between  items-center w-full px-3 py-2 hover:bg-gray-700 rounded transition"
           >
-            Page
-            <span className={`transform transition-transform ${open ? "rotate-180" : "rotate-0"}`}>
+            Data
+            <span
+              className={`transform transition-transform ${
+                openData ? "rotate-180" : "rotate-0"
+              }`}
+            >
               ▼
             </span>
           </button>
-          {open && (
+          {openData && (
             <div className="ml-4 mt-2 space-y-2 animate-fadeIn">
-              <Link to="/ProdukPage" className="block px-2 py-1  hover:underline">
+              <Link
+                to="/ProdukPage"
+                className="block px-2 py-1  hover:underline"
+              >
                 Produk
               </Link>
-              {isLogin === "SuperAdmin" ?
-                <Link to="/User" className="block px-2 py-1  hover:underline">
-                User
+              <Link
+                to="/Categories"
+                className="block px-2 py-1  hover:underline"
+              >
+                Categories
               </Link>
-               : null}
+              <Link to="/Type" className="block px-2 py-1  hover:underline">
+                Type
+              </Link>
+               <Link to="/Delevery" className="block px-2 py-1  hover:underline">
+                Delevery
+              </Link>
+              <Link to="/Payment" className="block px-2 py-1  hover:underline">
+                Payment
+              </Link>
+              <Link to="/Provinci" className="block px-2 py-1  hover:underline">
+                Provinci
+              </Link>
+              <Link to="/City" className="block px-2 py-1  hover:underline">
+                City
+              </Link>
+              {isLogin === "SuperAdmin" ? (
+                <Link to="/User" className="block px-2 py-1  hover:underline">
+                  User
+                </Link>
+              ) : null}
+            </div>
+          )}
+          <button
+            onClick={() => setOpenHome(!openHome)}
+            className="flex justify-between  items-center w-full px-3 py-2 hover:bg-gray-700 rounded transition"
+          >
+            Home
+            <span
+              className={`transform transition-transform ${
+                openHome ? "rotate-180" : "rotate-0"
+              }`}
+            >
+              ▼
+            </span>
+          </button>
+          {openHome && (
+            <div className="ml-4 mt-2 space-y-2 animate-fadeIn">
+              <Link
+                to="/ProdukType"
+                className="block px-2 py-1  hover:underline"
+              >
+                ProdukType
+              </Link>
+              <Link to="/Result" className="block px-2 py-1  hover:underline">
+                Result
+              </Link>
+            </div>
+          )}
+          <button
+            onClick={() => setOpenAbout(!openAbout)}
+            className="flex justify-between  items-center w-full px-3 py-2 hover:bg-gray-700 rounded transition"
+          >
+            About
+            <span
+              className={`transform transition-transform ${
+                openAbout ? "rotate-180" : "rotate-0"
+              }`}
+            >
+              ▼
+            </span>
+          </button>
+          {openAbout && (
+            <div className="ml-4 mt-2 space-y-2 animate-fadeIn">
+              <Link to="/Section" className="block px-2 py-1  hover:underline">
+                Section
+              </Link>
+              <Link
+                to="/ParagrafSection"
+                className="block px-2 py-1  hover:underline"
+              >
+                Paragraf Section
+              </Link>
+              <Link
+                to="/ParagrafAbout"
+                className="block px-2 py-1  hover:underline"
+              >
+                Paragraf About
+              </Link>
+              <Link to="/Power" className="block px-2 py-1  hover:underline">
+                Power
+              </Link>
+            </div>
+          )}
+          <button
+            onClick={() => setopenFaq(!openFaq)}
+            className="flex justify-between  items-center w-full px-3 py-2 hover:bg-gray-700 rounded transition"
+          >
+            Faq
+            <span
+              className={`transform transition-transform ${
+                openFaq ? "rotate-180" : "rotate-0"
+              }`}
+            >
+              ▼
+            </span>
+          </button>
+          {openFaq && (
+            <div className="ml-4 mt-2 space-y-2 animate-fadeIn">
+              <Link to="/Faq" className="block px-2 py-1  hover:underline">
+                Faq
+              </Link>
             </div>
           )}
         </nav>
@@ -53,4 +163,4 @@ export const AdminLayout = ({children}) => {
       <main className="flex-1 p-6 overflow-y-auto">{children}</main>
     </div>
   );
-}
+};

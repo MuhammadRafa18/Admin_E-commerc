@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
  const [account,setAccount] = useState();
- const { ListUser,setIslogin,isLogin,loading } = useContext(ProdukContext)
+ const { ListUser,setIslogin,isLogin,loading,setUserLogin } = useContext(ProdukContext)
  const navigate = useNavigate();
  const HandleLogin = (e) => {
     e.preventDefault();
@@ -15,6 +15,7 @@ export const Login = () => {
    const Check = ListUser.find((item) => item.email === data.email && item.password === data.password ) 
    if(Check){
       setIslogin(Check.role)
+      setUserLogin(Check)
       navigate(`/`)
    }else {
        alert("Email dan password salah")
