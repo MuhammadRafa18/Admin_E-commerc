@@ -2,72 +2,81 @@ import React, { useContext } from "react";
 import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
 import { AdminLayout } from "./AdminLayout";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const City = () => {
   const { City, setCity, ListCity, setListCity } = useContext(ProdukContext);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const url = `http://localhost:5000/City`;
+  const { Data } = UseFecth(url);
   const HandleEdit = (id) => {
-    const edit = ListCity.find((item) => item.id === id);
-    setCity(edit);
-    navigate(`/FormCity`);
+    navigate(`/FormCity/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListCity.filter((item) => item.id !== id);
-    setListCity(destroy);
+  const HandleDelete = async (id) => {
+    if (id) {
+      try {
+        await axios.delete(`http://localhost:5000/City/${id}`);
+        alert("Data berhasi dihapus");
+      } catch (err) {
+        console.error("Data gagal dihapus :", err);
+        alert("Data gagal dihapus");
+      }
+    }
   };
-  return  (
-       <AdminLayout>
-          <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
-            <button
-              onClick={() => {
-                setCity({});
-                navigate(`/FormCity`);
-              }}
-              className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
-            >
-              Tambah
-            </button>
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className=" text-center px-6 py-3">
-                    Provinci
-                  </th>
-                  <th scope="col" className=" text-center px-6 py-3">
-                    city
-                  </th>
-                  <th scope="col" className=" text-center px-6 py-3">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ListCity.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+  return (
+    <AdminLayout>
+      <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
+        <button
+          onClick={() => {
+            setCity({});
+            navigate(`/FormCity`);
+          }}
+          className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
+        >
+          Tambah
+        </button>
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className=" text-center px-6 py-3">
+                Provinci
+              </th>
+              <th scope="col" className=" text-center px-6 py-3">
+                city
+              </th>
+              <th scope="col" className=" text-center px-6 py-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {Data.map((item) => (
+              <tr
+                key={item.id}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+              >
+                <td className="text-center px-6 py-4">{item.provinci}</td>
+                <td className="text-center px-6 py-4">{item.city}</td>
+                <td className="text-center px-6 py-4 space-x-3">
+                  <button
+                    onClick={() => HandleEdit(item.id)}
+                    className="bg-green-500 text-white p-2 rounded-xl cursor-pointer"
                   >
-                    <td className="text-center px-6 py-4">{item.provinci}</td>
-                    <td className="text-center px-6 py-4">{item.city}</td>
-                    <td className="text-center px-6 py-4 space-x-3">
-                      <button
-                        onClick={() => HandleEdit(item.id)}
-                        className="bg-green-500 text-white p-2 rounded-xl cursor-pointer"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => HandleDelete(item.id)}
-                        className="bg-red-500 text-white p-2 rounded-xl cursor-pointer"
-                      >
-                        Hapus
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </AdminLayout>
-  )
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => HandleDelete(item.id)}
+                    className="bg-red-500 text-white p-2 rounded-xl cursor-pointer"
+                  >
+                    Hapus
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </AdminLayout>
+  );
 };

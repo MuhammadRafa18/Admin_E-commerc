@@ -1,30 +1,32 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export const UseFecth = (url) => {
-   const [Products,setProducts] = useState();
-   const [loading,setLoading] = useState(false);
-   useEffect(() => {
+  const [Data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
     const controller = new AbortController();
-    setLoading(true)
+    setLoading(true);
     const FetchData = async () => {
-        try{
-            const res = await axios.get(url , {
-                signal: controller.signal,
-            });
-            setLoading(false)
-            setProducts(res.data.products)
+      if (url) {
+        try {
+          const res = await axios.get(url, {
+            signal: controller.signal,
+          });
+          setLoading(false);
+          setData(res.data);
         } catch (err) {
-            setLoading(false)
+          setLoading(false);
 
-            console.error("Requset Data gagal", err.message)
+          console.error("Requset Data gagal", err.message);
         }
-    }
-    FetchData()
+      }
+    };
+    FetchData();
     return () => {
-        controller.abort();
-    }
-   },[url])
-  
-   return { Products }
-}
+      controller.abort();
+    };
+  }, [url]);
+
+  return { Data };
+};

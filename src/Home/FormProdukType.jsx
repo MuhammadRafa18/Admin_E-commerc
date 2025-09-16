@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PagesContext } from "../Context/PagesProvider";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Prev from "../assets/panah.svg";
 import dropdown from "../assets/panah.svg";
 import { ProdukContext } from "../Context/ProdukProvider";
+import axios from "axios";
+import { UseFecth } from "../hook/UseFecth";
 
 export const FormProdukType = () => {
   const { ProdukType, setProdukType, ListProdukType, setListProdukType } =
@@ -11,6 +13,18 @@ export const FormProdukType = () => {
     const {ListType,setListType} = useContext(ProdukContext)
     const [image,setimage] = useState(null)
     const navigate = useNavigate();
+    const {id} = useParams();
+    const { Data : Type } = UseFecth(`http://localhost:5000/type`)
+    useEffect(() => {
+        if(id){
+          try{
+            axios.get(`http://localhost:5000/ProdukType/${id}`)
+            .then((res) => setProdukType(res.data))
+          } catch (err) {
+            console.error("Data gagal req ; ", err)
+          }
+        }
+    },[id])
  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -21,27 +35,21 @@ export const FormProdukType = () => {
     };
     reader.readAsDataURL(file);
   };
-  const HandleForm = (e) => {
+  const HandleForm = async (e) => {
     e.preventDefault();
-     if(ProdukType.id){
-       const update = ListProdukType.map((item) => item.id === ProdukType.id ? {id:ProdukType.id,gambar: image || ProdukType.gambar || item.gambar,type:ProdukType.type} : item ) 
-       setListProdukType(update)
-    }else{
-    const data = {
-        id:Date.now(),
-        gambar:image,
-        type:ProdukType.type
-    }
-    setListProdukType([...ListProdukType,data])
+     const mydata = {
+        id:ProdukType.id || Date.now().toString(),
+        gambar:image || ProdukType.gambar,
+        type:ProdukType.type || "",
+  
 }
-    // console.log(data)
-    setProdukType({
-        id:"",
-        type:"",
-    })
-    setimage(null)
+     if(ProdukType.id){
+     await  axios.put(`http://localhost:5000/ProdukType/${ProdukType.id}`,mydata)
+    }else{
+      await axios.post(`http://localhost:5000/ProdukType`,mydata)    
+    };
     navigate(`/ProdukType`)
-  };
+}
 // console.log(ProdukType)
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
@@ -86,8 +94,8 @@ export const FormProdukType = () => {
                value={ProdukType.type || ""}
               >
                 <option>Select Type</option>
-                {ListType?.length > 0 &&
-                ListType.map((item) => (
+                {Type?.length > 0 &&
+                Type.map((item) => (
                 <option key={item.id} value={item.type}>{item.type}</option>
                 ))}
               </select>

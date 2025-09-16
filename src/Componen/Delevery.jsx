@@ -2,19 +2,28 @@ import React, { useContext } from "react";
 import { AdminLayout } from "./AdminLayout";
 import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const Delevery = () => {
   const { Delevery, setDelevery, ListDelevery, setListDelevery } =
     useContext(ProdukContext);
   const navigate = useNavigate();
+  const url = (`http://localhost:5000/delevery`)
+  const {Data} = UseFecth(url)
   const HandleEdit = (id) => {
-    const edit = ListDelevery.find((item) => item.id === id);
-    setDelevery(edit);
-    navigate(`/FormDelevery`);
+    navigate(`/FormDelevery/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListDelevery.filter((item) => item.id !== id);
-    setListDelevery(destroy);
+  const HandleDelete = async (id) => {
+    if(confirm("Hapus Data delevery ? ")){
+      try{
+        await axios.delete(`http://localhost:5000/delevery/${id}`)
+        alert("Data berhasil diproses")
+      } catch (err) {
+        console.error("Data gagal di hapus : ", err)
+        alert("Gagal Hapus Data")
+      }
+    }
   };
   return (
     <AdminLayout>
@@ -40,7 +49,7 @@ export const Delevery = () => {
             </tr>
           </thead>
           <tbody>
-            {ListDelevery.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

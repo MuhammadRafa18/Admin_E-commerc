@@ -2,18 +2,26 @@ import React, { useContext, useEffect } from 'react'
 import { AdminLayout } from './AdminLayout'
 import { useNavigate } from 'react-router-dom'
 import { ProdukContext } from '../Context/ProdukProvider'
+import { UseFecth } from '../hook/UseFecth'
+import axios from 'axios'
 
 export const User = () => {
     const {ListUser,User,setUser, setListUser,isLogin,loading} = useContext(ProdukContext)
     const navigate = useNavigate()
+    const {Data} = UseFecth(`http://localhost:5000/users`)
     const HandleEdit = (id) => {
-      const Edit = ListUser.find((item) => item.id === id)
-      setUser(Edit)
-      navigate(`/FormUser`)
+      navigate(`/FormUser/${id}`)
     }
-    const HandleDelete = (id) => {
-        const UpdateUser = ListUser.filter((item) => item.id !== id)
-        setListUser(UpdateUser)
+    const HandleDelete = async (id) => {
+        if(confirm("Hapus data ?")){
+          try{
+          await axios.delete(`http://localhost:5000/users/${id}`)
+          alert("Data Sukses delete")
+          } catch (err){
+            console.error("Data gagal dihapus", err)
+            alert("Data gagal dihapus")
+          }
+        }
     }
    
     
@@ -36,9 +44,6 @@ export const User = () => {
                    Fullname
                  </th>
                  <th scope="col" className="text-center px-6 py-3">
-                   Phone
-                 </th>
-                 <th scope="col" className="text-center px-6 py-3">
                    Role
                  </th>
                  <th scope="col" className="text-center px-6 py-3">
@@ -52,11 +57,10 @@ export const User = () => {
              <tbody>
    
            
-               {ListUser.map((item) => (
+               {Data.map((item) => (
                <tr key={item.id}  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                  <td className="text-center px-6 py-4">{item.email}</td>
                  <td className="text-center px-6 py-4">{item.name}</td>
-                 <td className="text-center px-6 py-4">{item.phone}</td>
                  <td className="text-center px-6 py-4">{item.role}</td>
                  <td className="text-center px-6 py-4">{item.password}</td>
                  <td className="text-center px-6 py-4 space-x-2">

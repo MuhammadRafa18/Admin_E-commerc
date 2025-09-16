@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ProdukContext } from "../Context/ProdukProvider";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Prev from "../assets/panah.svg";
+import axios from "axios";
 
 
 export const FormPayment = () => {
@@ -9,6 +10,17 @@ export const FormPayment = () => {
     useContext(ProdukContext);
     const navigate = useNavigate();
     const [image,setimage] = useState(null)
+    const {id} = useParams();
+    useEffect(() => {
+      if(id){
+        try{
+          axios.get(`http://localhost:5000/Payment/${id}`)
+          .then((res) => setPayment(res.data))
+        } catch (err) {
+          console.error("Data gagal get :", err)
+        }
+      }
+    },[id])
       const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -19,30 +31,22 @@ export const FormPayment = () => {
     };
     reader.readAsDataURL(file);
   };
-    const HandleForm = (e) => {
+    const HandleForm = async (e) => {
      e.preventDefault();
-     if(Payment.id){
-      const update = ListPayment.map((item) => item.id === Payment.id ? {
-        id:Payment.id,
-        icon:image || Payment.icon || item.icon,
-        payment:Payment.payment
-      } : item)
-      setListPayment(update)
-     }else{
-       const data = {
-        id:Date.now(),
-        icon:image,
-        payment:Payment.payment
+     const mydata = {
+        id:Payment.id ||Date.now().toString(),
+        icon:image || Payment.icon,
+        payment:Payment.payment || ""
        }
-       setListPayment([...ListPayment,data])
+     if(Payment.id){
+      await axios.put(`http://localhost:5000/Payment/${Payment.id}`,mydata)
+     }else{
+      await axios.post(`http://localhost:5000/Payment`,mydata)
      }
-     setPayment({
-        id:"",
-        payment:""
-     })
      setimage(null)
      navigate(`/Payment`)
     }
+    // console.log(Payment)
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">

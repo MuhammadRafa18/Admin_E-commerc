@@ -1,51 +1,41 @@
 import React, { useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Prev from "../assets/panah.svg";
 import dropdown from "../assets/panah.svg";
 import { ProdukContext } from "../Context/ProdukProvider";
+import axios from "axios";
 
 export const FormUser = () => {
   const { User, setUser, setListUser, ListUser,isLogin,loading } = useContext(ProdukContext);
   const navigate = useNavigate();
-  const HandleForm = (e) => {
+  const {id} = useParams();
+  useEffect(() => {
+      if(id){
+        try{
+          axios.get(`http://localhost:5000/users/${id}`)
+          .then((res) => setUser(res.data))
+        } catch (err) {
+          console.error("Data gagal req :", err)
+        }
+      }
+  },[id])
+  const HandleForm = async (e) => {
     e.preventDefault();
-    if(User.id) {
-      const Edit = ListUser.map((item) => item.id === User.id ? {id:User.id,
-      email: User.email,
-      name: User.name,
-      phone: User.phone,
-      role: User.role,
-      password: User.password
-      } : item)
-      setListUser(Edit)
-        setUser({
-      email: "",
-      name: "",
-      phone: "",
-      role: "",
-      password: "",
-    });
-    navigate(`/User`)
-    } else {
-    const Data = {
-      id: Date.now(),
-      email: User.email,
-      name: User.name,
-      phone: User.phone,
-      role: User.role,
-      password: User.password
+    const mydata = {
+      id: User.id || Date.now().toString() || "",
+      email: User.email || "",
+      name: User.name || "",
+      phone: User.phone || "",
+      role: User.role || "",
+      password: User.password || ""
     };
-    setListUser([...ListUser, Data]);
-
-    setUser({
-      email: "",
-      name: "",
-      phone: "",
-      role: "",
-      password: "",
-    });
+    if(User.id) {
+    await axios.put(`http://localhost:5000/users/${User.id}`,mydata)
+    } else {
+   await axios.post(`http://localhost:5000/users`,mydata)
+     
+  }
    navigate(`/User`)
-    }
   };
  
   
@@ -91,24 +81,6 @@ export const FormUser = () => {
             />
           </div>
 
-          {/* <!-- Phone number --> */}
-          <div>
-            <label className="block text-base  mb-1 font-medium">
-              Phone number
-            </label>
-            <div className="flex">
-              <span className="bg-black text-white px-3 flex items-center rounded-l-xl">
-                +62
-              </span>
-              <input
-                type="text"
-                className="w-full border rounded-r-xl px-2.5 py-3 text-sm"
-                value={User.phone || ""}
-                onChange={(e) => setUser({ ...User, phone: e.target.value })}
-                required
-              />
-            </div>
-          </div>
 
           <div className="space-y-2 mb-4">
             <label className="text-base block">Role</label>

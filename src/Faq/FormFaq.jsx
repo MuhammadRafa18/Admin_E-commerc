@@ -1,40 +1,40 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { PagesContext } from "../Context/PagesProvider";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Prev from "../assets/panah.svg";
+import axios from "axios";
 
 export const FormFaq = () => {
   const { Faq, setFaq, ListFaq, setListFaq } = useContext(PagesContext);
   const navigate = useNavigate();
-  const HandleForm = (e) => {
-    e.preventDefault();
-      if (Faq.id) {
-        const update = ListFaq.map((item) => item.id === Faq.id ? {
-            id:Faq.id,
-            judul:Faq.judul,
-            quest1:Faq.quest1,
-            quest2:Faq.quest2,
-            quest3:Faq.quest3,
-        } : item)
-        setListFaq(update)
-    } else {
-    const data = {
-        id:Date.now(),
-        judul:Faq.judul,
-        quest1:Faq.quest1,
-        quest2:Faq.quest2,
-        quest3:Faq.quest3
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      try {
+        axios
+          .get(`http://localhost:5000/Faq/${id}`)
+          .then((res) => setFaq(res.data));
+      } catch (err) {
+        console.error("Data gagal req :", err);
+      }
     }
-    setListFaq([...ListFaq,data])
-}
-    setFaq({
-        id:"",
-        judul:"",
-        quest1:"",
-        quest2:"",
-        quest3:""
-    })
-    navigate(`/Faq`)
+  }, [id]);
+  const HandleForm = async (e) => {
+    e.preventDefault();
+    const mydata = {
+      id: Faq.id || Date.now().toString(),
+      judul: Faq.judul || "",
+      quest1: Faq.quest1 || "",
+      quest2: Faq.quest2 || "",
+      quest3: Faq.quest3 || "",
+    };
+    if (Faq.id) {
+      await axios.put(`http://localhost:5000/Faq/${id}`, mydata);
+    } else {
+      await axios.post(`http://localhost:5000/Faq`, mydata);
+    }
+
+    navigate(`/Faq`);
   };
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">

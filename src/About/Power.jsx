@@ -2,20 +2,27 @@ import React, { useContext } from "react";
 import { AdminLayout } from "../Componen/AdminLayout";
 import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const Power = () => {
   const { ListPower, setListPower, Power, setPower } = useContext(PagesContext);
   const navigate = useNavigate();
+  const {Data} = UseFecth(`http://localhost:5000/Power`)
   const HandleEdit = (id) => {
-    const edit = ListPower.find((item) => item.id === id);
-    setPower(edit);
-    navigate(`/FormPower`);
+    navigate(`/FormPower/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListPower.filter((item) => item.id !== id);
-    setListPower(destroy);
+  const HandleDelete = async (id) => {
+    if(confirm("Hapus data ?")){
+      try{
+       await axios.delete(`http://localhost:5000/Power/${id}`)
+      }catch(err){
+        console.error("Hapus data gagal :", err)
+        alert("Hapus data gagal")
+      }
+    }
   };
-console.log(ListPower)
+
   return (
     <AdminLayout>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
@@ -43,7 +50,7 @@ console.log(ListPower)
             </tr>
           </thead>
           <tbody>
-            {ListPower.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

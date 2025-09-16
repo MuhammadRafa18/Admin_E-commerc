@@ -1,21 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
 import Prev from "../assets/panah.svg";
 import dropdown from "../assets/panah.svg";
-import { Link, useNavigate, useParams } from "react-router";
+import { data, Link, useNavigate, useParams } from "react-router";
 import { ProdukContext } from "../Context/ProdukProvider";
 import axios from "axios";
+import { UseFecth } from "../hook/UseFecth";
 
 export const FormProduk = () => {
   const { ListProduk, setListProduk, Produk, setProduk } =
     useContext(ProdukContext);
   const navigate = useNavigate();
+  const {Data: category} = UseFecth(`http://localhost:5000/category`)
+  const {Data: type}= UseFecth(`http://localhost:5000/type`)
   const [image, setimage] = useState(null);
   const {id} = useParams();
   useEffect(() => {
        if(id){
         axios
-        .get(`https://dummyjson.com/products/${id}`)
-        .then((res) => setProduk(res.data.products))
+        .get(`http://localhost:5000/produk/${id}`)
+        .then((res) => setProduk(res.data))
        }
   },[id])
 
@@ -33,49 +36,47 @@ export const FormProduk = () => {
   const HandleForm = async (e) => {
     e.preventDefault();
     try{
-     const formData = new FormData();
-    formData.append("id", Produk.id || Date.now())
-    formData.append("gambar",  image || Produk.gambar || item.gambar,)
-    formData.append("name", Produk.name || "");
-    formData.append("type", Produk.type || "");
-    formData.append("category", Produk.category || "");
-    formData.append("price", Produk.price || 0);
-    formData.append("size", Produk.size || "");
-    formData.append("rating", Produk.rating || 0);
-    formData.append("stok", Produk.stok || 0);
+    //  const formData = new FormData();
+    // formData.append("id", Produk.id || Date.now())
+    // formData.append("gambar",  image || Produk.gambar || item.gambar,)
+    // formData.append("name", Produk.name || "");
+    // formData.append("type", Produk.type || "");
+    // formData.append("category", Produk.category || "");
+    // formData.append("price", Produk.price || 0);
+    // formData.append("size", Produk.size || "");
+    // formData.append("rating", Produk.rating || 0);
+    // formData.append("stok", Produk.stok || 0);
+    const mydata = {
+      id: Produk.id || Date.now().toString(), // auto id kalau belum ada
+      gambar: image || Produk.gambar || "", // bisa base64 atau link
+      title: Produk.title || "",
+      type: Produk.type || "",
+      category: Produk.category || "",
+      price: Produk.price || 0,
+      size: Produk.size || "",
+      rating: Produk.rating || 0,
+      stok: Produk.stok || 0,
+    };
 
 
    if (Produk.id) {
       // UPDATE
       await axios.put(
-        `http://localhost:3000/produk/${Produk.id}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      alert("Produk berhasil diupdate ✅");
+        `http://localhost:5000/produk/${Produk.id}`,mydata);
+      alert("Produk berhasil diupdate ");
     } else {
       // CREATE
-      await axios.post("http://localhost:3000/produk", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      alert("Produk berhasil ditambahkan ✅");
+      await axios.post("http://localhost:5000/produk", mydata);
+      alert("Produk berhasil ditambahkan ");
     }
-     setProduk({
-      name: "",
-      price: "",
-      size: "",
-      rating: "",
-      stok: "",
-    });
     setimage(null);
     navigate("/ProdukPage");
   } catch (err) {
     console.error("Error saat create/update produk:", err);
-    alert("Gagal menyimpan produk ❌");
+    alert("Gagal menyimpan produk ");
   }
   };
+  // console.log(Produk)
 
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
@@ -117,9 +118,9 @@ export const FormProduk = () => {
               id="name"
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 "
-              value={Produk.name || ""}
+              value={Produk.title || ""}
               required
-              onChange={(e) => setProduk({ ...Produk, name: e.target.value })}
+              onChange={(e) => setProduk({ ...Produk, title: e.target.value })}
             />
           </div>
           <div className="space-y-2 mb-4">
@@ -137,9 +138,10 @@ export const FormProduk = () => {
                 required
               >
                 <option value="">Pilih Type</option>
-                <option value="Bestseller">Bestseller</option>
-                <option value="Skin Type">Skin Type</option>
-                <option value="New Arrival">New Arrival</option>
+                {type?.length > 0 &&
+                type.map((item) => (
+                  <option key={item.id} value={item.type}>{item.type}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -160,10 +162,10 @@ export const FormProduk = () => {
                 required
               >
                 <option value="">Pilih Category</option>
-                <option value="Facewash">Facewash</option>
-                <option value="Serum">Serum</option>
-                <option value="Sunscreen">Sunscreen</option>
-                <option value="Mosturizer">Mosturizer</option>
+                 {category?.length > 0 &&
+                 category.map((item) => (
+                  <option key={item.id} value={item.category}>{item.category}</option>
+                 ))}
               </select>
             </div>
           </div>

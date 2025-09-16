@@ -35,48 +35,65 @@ import { Provinci } from '../Componen/Provinci'
 import { City } from '../Componen/City'
 import { FormCity } from '../Componen/FormCity'
 import { Home } from '../Componen/Home'
+import PrivateRoute from './PrivateRoute'
+import { AuthContext } from '../Context/AuthContext'
 
 export const MainRoute = () => {
-  const { isLogin, } = useContext(ProdukContext) 
+   const { token } = useContext(AuthContext);
   return (
     <Routes>
-        <Route path='/' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ? <Home/> : <Navigate to="/Login"/> }/>
+        <Route path='/' element={ <PrivateRoute><Home/></PrivateRoute>   }/>
         {/* Route Data */}
-        <Route path='/ProdukPage' element={  isLogin === "Admin" || isLogin === "SuperAdmin" ? <ProdukPage/>: <Navigate to="/Login"/> }/>
+        <Route path='/ProdukPage' element={ <PrivateRoute><ProdukPage/></PrivateRoute>   }/>
         <Route path='/User' element={ <RouteSuperAdmin><User/></RouteSuperAdmin>  }/>
       
-      <Route path='/FormProduk' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ? <FormProduk/>: <Navigate to="/Login"/>} />
+      <Route path='/FormProduk' element={ <PrivateRoute><FormProduk/></PrivateRoute> } />
+      <Route path='/FormProduk/:id' element={  <PrivateRoute><FormProduk/></PrivateRoute> } />
       <Route path='/FormUser' element={ <RouteSuperAdmin><FormUser/></RouteSuperAdmin>  } />
-      <Route path='/Login' element={ isLogin === null ? <Login/> : <Navigate to="/"/>}/>
-      <Route path='/Categories' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Categories/> : <Navigate to="/Login"/> } />
-      <Route path='/FormCategories' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormCategories/>: <Navigate to="/Login"/> } />
-      <Route path='/FormType' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormType/>: <Navigate to="/Login"/> } />
-      <Route path='/Type' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Type/>: <Navigate to="/Login"/> } />
-      <Route path='/FormPayment' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormPayment/> : <Navigate to="/Login"/> } />
-      <Route path='/Payment' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Payment/> : <Navigate to="/Login"/> } />
-      <Route path='/Delevery' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Delevery/> : <Navigate to="/Login"/> } />
-      <Route path='/FormDelevery' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormDelevery/> : <Navigate to="/Login"/> } />
-      <Route path='/FormProvinci' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormProvinci/> : <Navigate to="/Login"/> } />
-      <Route path='/Provinci' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Provinci/> : <Navigate to="/Login"/> } />
-      <Route path='/City' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<City/> : <Navigate to="/Login"/> } />
-      <Route path='/FormCity' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormCity/> : <Navigate to="/Login"/> } />
+      <Route path='/FormUser/:id' element={ <RouteSuperAdmin><FormUser/></RouteSuperAdmin>  } />
+      <Route path='/Login' element={ token ? <Navigate to="/"/>  :  <Login/> }/>
+      <Route path='/Categories' element={ <PrivateRoute><Categories/></PrivateRoute>  } />
+      <Route path='/FormCategories' element={ <PrivateRoute><FormCategories/></PrivateRoute> } />
+      <Route path='/FormCategories/:id' element={ <PrivateRoute><FormCategories/></PrivateRoute> } />
+      <Route path='/FormType' element={ <PrivateRoute><FormType/></PrivateRoute>  } />
+      <Route path='/FormType/:id' element={ <PrivateRoute><FormType/></PrivateRoute>  } />
+      <Route path='/Type' element={ <PrivateRoute><Type/></PrivateRoute> } />
+      <Route path='/FormPayment' element={ <PrivateRoute><FormPayment/></PrivateRoute> }/>
+      <Route path='/FormPayment/:id' element={ <PrivateRoute><FormPayment/></PrivateRoute> }/>
+      <Route path='/Payment' element={ <PrivateRoute><Payment/></PrivateRoute>  } />
+      <Route path='/Delevery' element={ <PrivateRoute><Delevery/></PrivateRoute>  } />
+      <Route path='/FormDelevery' element={ <PrivateRoute><FormDelevery/></PrivateRoute>  } />
+      <Route path='/FormDelevery/:id' element={ <PrivateRoute><FormDelevery/></PrivateRoute>  } />
+      <Route path='/FormProvinci' element={ <PrivateRoute><FormProvinci/></PrivateRoute> } />
+      <Route path='/FormProvinci/:id' element={ <PrivateRoute><FormProvinci/></PrivateRoute> } />
+      <Route path='/Provinci' element={ <PrivateRoute><Provinci/> </PrivateRoute>  } />
+      <Route path='/City' element={ <PrivateRoute><City/> </PrivateRoute>  } />
+      <Route path='/FormCity' element={ <PrivateRoute><FormCity/> </PrivateRoute> } />
+      <Route path='/FormCity/:id' element={ <PrivateRoute><FormCity/> </PrivateRoute> } />
       {/* Route Home */}
-      <Route path='/ProdukType' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<ProdukType/> : <Navigate to="/Login"/> } />
-      <Route path='/FormProdukType' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormProdukType/> : <Navigate to="/Login"/> } />
-      <Route path='/FormResult' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormResult/> : <Navigate to="/Login"/> } />
-      <Route path='/Result' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Result/> : <Navigate to="/Login"/> } />
+      <Route path='/ProdukType' element={ <PrivateRoute><ProdukType/></PrivateRoute> } />
+      <Route path='/FormProdukType' element={ <PrivateRoute><FormProdukType/></PrivateRoute>   } />
+      <Route path='/FormProdukType/:id' element={ <PrivateRoute><FormProdukType/></PrivateRoute>   } />
+      <Route path='/FormResult' element={ <PrivateRoute><FormResult/></PrivateRoute>   } />
+      <Route path='/FormResult/:id' element={ <PrivateRoute><FormResult/></PrivateRoute>  } />
+      <Route path='/Result' element={ <PrivateRoute><Result/> </PrivateRoute> } />
       {/* Route About */}
-      <Route path='/Section' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Section/> : <Navigate to="/Login"/> } />
-      <Route path='/FormSection' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormSection/> : <Navigate to="/Login"/> } />
-      <Route path='/Power' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Power/> : <Navigate to="/Login"/> } />
-      <Route path='/FormPower' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormPower/> : <Navigate to="/Login"/> } />
-      <Route path='/ParagrafAbout' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<ParagrafAbout/> : <Navigate to="/Login"/> } />
-      <Route path='/FormParagrafAbout' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormParagrafAbout/> : <Navigate to="/Login"/> } />
-      <Route path='/ParagrafSection' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<ParagrafSection/> : <Navigate to="/Login"/> } />
-      <Route path='/FormParagrafSection' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormParagrafSection/> : <Navigate to="/Login"/> } />
+      <Route path='/Section' element={ <PrivateRoute><Section/> </PrivateRoute> } />
+      <Route path='/FormSection' element={ <PrivateRoute><FormSection/></PrivateRoute>  } />
+      <Route path='/FormSection/:id' element={ <PrivateRoute><FormSection/></PrivateRoute>  } />
+      <Route path='/Power' element={ <PrivateRoute><Power/>  </PrivateRoute>} />
+      <Route path='/FormPower' element={ <PrivateRoute><FormPower/> </PrivateRoute> } />
+      <Route path='/FormPower/:id' element={ <PrivateRoute><FormPower/> </PrivateRoute> } />
+      <Route path='/FormParagrafAbout' element={ <PrivateRoute><FormParagrafAbout/></PrivateRoute>  } />
+      <Route path='/FormParagrafAbout/:id' element={ <PrivateRoute><FormParagrafAbout/>  </PrivateRoute>} />
+      <Route path='/ParagrafAbout' element={ <PrivateRoute><ParagrafAbout/></PrivateRoute>  } />
+      <Route path='/ParagrafSection' element={ <PrivateRoute><ParagrafSection/> </PrivateRoute> } />
+      <Route path='/FormParagrafSection' element={ <PrivateRoute><FormParagrafSection/> </PrivateRoute> } />
+      <Route path='/FormParagrafSection/:id' element={ <PrivateRoute><FormParagrafSection/></PrivateRoute>  } />
       {/* Route Faq */}
-      <Route path='/Faq' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<Faq/> : <Navigate to="/Login"/> } />
-      <Route path='/FormFaq' element={ isLogin === "Admin" || isLogin === "SuperAdmin" ?<FormFaq/> : <Navigate to="/Login"/> } />
+      <Route path='/Faq' element={ <PrivateRoute><Faq/></PrivateRoute>  } />
+      <Route path='/FormFaq' element={ <PrivateRoute><FormFaq/></PrivateRoute>  } />
+      <Route path='/FormFaq/:id' element={ <PrivateRoute><FormFaq/></PrivateRoute>  } />
     </Routes>
   )
 }

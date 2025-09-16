@@ -2,18 +2,25 @@ import React, { useContext } from "react";
 import { AdminLayout } from "./AdminLayout";
 import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const Type = () => {
   const { Type, setType, ListType, setListType } = useContext(ProdukContext);
   const navigate = useNavigate();
+  const url = (`http://localhost:5000/type`)
+  const {Data} = UseFecth(url)
   const HandleEdit = (id) => {
-    const edit = ListType.find((item) => item.id === id);
-    setType(edit);
-    navigate(`/FormType`);
+    navigate(`/FormType/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListType.filter((item) => item.id !== id);
-    setListType(destroy);   
+  const HandleDelete = async (id) => {
+      try{
+         await axios.delete(`http://localhost:5000/type/${id}`)
+         alert("Data berhasil dihapus")
+      }catch{
+        // console.error("Data gagal di hapus :", err)
+        alert("Data gagal dihapus")
+      }
   };
     // console.log(ListType)
   return (
@@ -40,7 +47,7 @@ export const Type = () => {
             </tr>
           </thead>
           <tbody>
-            {ListType.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

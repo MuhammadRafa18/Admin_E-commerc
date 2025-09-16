@@ -1,13 +1,26 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PagesContext } from "../Context/PagesProvider";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Prev from "../assets/panah.svg";
 import dropdown from "../assets/panah.svg";
+import axios from "axios";
 
 export const FormPower = () => {
   const { ListPower, setListPower, Power, setPower } = useContext(PagesContext);
-  const [image,setimage] = useState(null)
+  const [image, setimage] = useState(null);
   const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      try {
+        axios
+          .get(`http://localhost:5000/Power/${id}`)
+          .then((res) => setPower(res.data));
+      } catch (err) {
+        console.error("Data Gagal req :", err);
+      }
+    }
+  }, [id]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -18,33 +31,19 @@ export const FormPower = () => {
     };
     reader.readAsDataURL(file);
   };
-  const HandleForm = (e) => {
+  const HandleForm = async (e) => {
     e.preventDefault();
+    const mydata = {
+      id: Power.id || Date.now().toString(),
+      icon: image || Power.icon,
+      benefit: Power.benefit || "",
+    };
     if (Power.id) {
-      const update = ListPower.map((item) =>
-        item.id === Power.id
-          ? {
-              id: Power.id,
-              icon: image || Power.icon || item.icon,
-              benefit: Power.benefit,
-            }
-          : item
-      );
-      setListPower(update);
+      await axios.put(`http://localhost:5000/Power/${Power.id}`, mydata);
     } else {
-      const data = {
-        id: Date.now(),
-        icon: image,
-        benefit: Power.benefit,
-      };
-      setListPower([...ListPower, data]);
+      await axios.post(`http://localhost:5000/Power`, mydata);
     }
-    // console.log(data)
-    setPower({
-      id: "",
-      benefit: "",
-    });
-    setimage(null);
+
     navigate(`/Power`);
   };
   return (
@@ -74,10 +73,8 @@ export const FormPower = () => {
               onChange={handleFileChange}
             />
           </div>
-           <div>
-            <label className="block text-base  mb-1 font-medium">
-              Benefit
-            </label>
+          <div>
+            <label className="block text-base  mb-1 font-medium">Benefit</label>
             <input
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"

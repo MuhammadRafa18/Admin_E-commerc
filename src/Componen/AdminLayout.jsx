@@ -1,19 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ProdukContext } from "../Context/ProdukProvider";
+import { AuthContext } from "../Context/AuthContext";
 
 export const AdminLayout = ({ children }) => {
   const [openData, setOpenData] = useState(false);
   const [openHome, setOpenHome] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
   const [openFaq, setopenFaq] = useState(false);
-  const { isLogin, setIslogin, loading } = useContext(ProdukContext);
-  const location = useLocation();
+  const { User ,loading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const {logout} = useContext(AuthContext)
   const handleLogout = () => {
     if (window.confirm("Mau log out?")) {
-      setIslogin(null); // kosongkan session
-      navigate("/Login"); // arahkan ke login
+      logout();
     }
   };
 
@@ -67,7 +67,7 @@ export const AdminLayout = ({ children }) => {
               <Link to="/City" className="block px-2 py-1  hover:underline">
                 City
               </Link>
-              {isLogin === "SuperAdmin" ? (
+              {User.role === "SuperAdmin" ? (
                 <Link to="/User" className="block px-2 py-1  hover:underline">
                   User
                 </Link>

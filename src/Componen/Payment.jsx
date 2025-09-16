@@ -2,19 +2,28 @@ import React, { useContext } from "react";
 import { AdminLayout } from "./AdminLayout";
 import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const Payment = () => {
   const { Payment, setPayment, ListPayment, setListPayment } =
     useContext(ProdukContext);
+    const url = (`http://localhost:5000/Payment`)
+    const {Data} = UseFecth(url)
   const navigate = useNavigate();
   const HandleEdit = (id) => {
-    const edit = ListPayment.find((item) => item.id === id);
-    setPayment(edit);
-    navigate(`/FormPayment`);
+    navigate(`/FormPayment/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListPayment.filter((item) => item.id !== id);
-    setListPayment(destroy);
+  const HandleDelete = async (id) => {
+    if(confirm("Hapus Data ? ")){
+      try{
+        await axios.delete(`http://localhost:5000/Payment/${id}`)
+        alert("Hapus Data berhasil")
+      }catch (err){
+        console.error("Data gagal : ", err)
+        alert("Data Gagal dihapus")
+      }
+    }
   };
   return (
     <AdminLayout>
@@ -43,7 +52,7 @@ export const Payment = () => {
             </tr>
           </thead>
           <tbody>
-            {ListPayment.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

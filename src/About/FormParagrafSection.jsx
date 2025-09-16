@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router";
 import { PagesContext } from "../Context/PagesProvider";
 import Prev from "../assets/panah.svg";
+import axios from "axios";
 
 export const FormParagrafSection = () => {
   const {
@@ -11,26 +12,30 @@ export const FormParagrafSection = () => {
     setParagrafSection,
   } = useContext(PagesContext);
   const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      try {
+        axios
+          .get(`http://localhost:5000/ParagrafSection/${id}`)
+          .then((res) => setParagrafSection(res.data));
+      } catch (err) {
+        console.error("Data gagal req :", err);
+      }
+    }
+  }, [id]);
   const HandleForm = (e) => {
     e.preventDefault();
+    const mydata = {
+      id: ParagrafSection.id || Date.now().toString(),
+      paragraf: ParagrafSection.paragraf || "",
+    };
     if (ParagrafSection.id) {
-        const update = ListParagrafSection.map((item) => item.id === ParagrafSection.id ? {
-            id:ParagrafSection.id,
-            paragraf:ParagrafSection.paragraf
-        } : item)
-        setListParagrafSection(update)
+      axios.put(`http://localhost:5000/ParagrafSection/${ParagrafSection.id}`, mydata);
     } else {
-      const data = {
-        id: Date.now(),
-        paragraf: ParagrafSection.paragraf,
-      };
-      // console.log(data)
-      setListParagrafSection([...ListParagrafSection, data]);
+      axios.post(`http://localhost:5000/ParagrafSection`, mydata);
     }
-    setParagrafSection({
-      id: "",
-      paragraf: "",
-    });
+
     navigate(`/ParagrafSection`);
   };
 

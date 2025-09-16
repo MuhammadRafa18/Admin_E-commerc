@@ -1,14 +1,28 @@
-import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router";
 import { PagesContext } from "../Context/PagesProvider";
 import Prev from "../assets/panah.svg";
-
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const FormResult = () => {
-     const {ListResult, setListResult,Result, setResult} = useContext(PagesContext)
-     const [image,setimage] = useState(null)
-    const navigate = useNavigate();
-     const handleFileChange = (e) => {
+  const { ListResult, setListResult, Result, setResult } =
+    useContext(PagesContext);
+  const [image, setimage] = useState(null);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      try {
+        axios
+          .get(`http://localhost:5000/Result/${id}`)
+          .then((res) => setResult(res.data));
+      } catch (err) {
+        console.error("Data gagal req :", err);
+      }
+    }
+  }, [id]);
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -18,27 +32,22 @@ export const FormResult = () => {
     };
     reader.readAsDataURL(file);
   };
-  const HandleForm = (e) => {
+  const HandleForm = async (e) => {
     e.preventDefault();
-     if(Result.id){
-       const update = ListResult.map((item) => item.id === Result.id ? {id:Result.id,gambar: image || Result.gambar || item.gambar} : item ) 
-       setListResult(update)
-    }else{
-    const data = {
-        id:Date.now(),
-        gambar:image,
+    const mydata = {
+      id: Result.id || Date.now().toString(),
+      gambar: image || Result.gambar,
+    };
+    if (Result.id) {
+      await axios.put(`http://localhost:5000/Result/${Result.id}`, mydata);
+    } else {
+      await axios.post(`http://localhost:5000/Result`, mydata);
     }
-    setListResult([...ListResult,data])
-}
-    // console.log(data)
-    setResult({
-        id:"",
-    })
-    setimage(null)
-    navigate(`/Result`)
+
+    navigate(`/Result`);
   };
   return (
-       <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
+    <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
         {/* <!-- Header --> */}
         <header className="flex items-center space-x-1 text-xl font-medium">
@@ -48,9 +57,7 @@ export const FormResult = () => {
           <h1>{Result.id ? "Update Produk" : "Add Produk"}</h1>
         </header>
         <form onSubmit={HandleForm} className="space-y-4">
-            {Result.id ? 
-            <img src={Result.gambar} className="w-10"/>
-            : null}
+          {Result.id ? <img src={Result.gambar} className="w-10" /> : null}
           <div>
             <label
               htmlFor="gambar"
@@ -89,6 +96,5 @@ export const FormResult = () => {
         </form>
       </main>
     </div>
-  )
-}
-
+  );
+};

@@ -2,19 +2,26 @@ import React, { useContext } from "react";
 import { AdminLayout } from "./AdminLayout";
 import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const Provinci = () => {
   const { Provinci, setProvinci, ListProvinci, setListProvinci } =
     useContext(ProdukContext);
+    const url = (`http://localhost:5000/Provinci`)
+    const {Data} = UseFecth(url)
   const navigate = useNavigate();
   const HandleEdit = (id) => {
-    const edit = ListProvinci.find((item) => item.id === id);
-    setProvinci(edit);
-    navigate(`/FormProvinci`);
+    navigate(`/FormProvinci/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListProvinci.filter((item) => item.id !== id);
-    setListProvinci(destroy);
+  const HandleDelete = async (id) => {
+     if(confirm("Hapus data ?")){
+      try{
+         axios.delete(`http://localhost:5000/Provinci/${id}`)
+      }catch (err) {
+        console.error("Data gagal dihapus :", err)
+      }
+     }
   };
   return ( 
   <AdminLayout>
@@ -40,7 +47,7 @@ export const Provinci = () => {
             </tr>
           </thead>
           <tbody>
-            {ListProvinci.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

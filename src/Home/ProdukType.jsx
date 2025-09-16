@@ -2,19 +2,25 @@ import React, { useContext } from "react";
 import { AdminLayout } from "../Componen/AdminLayout";
 import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const ProdukType = () => {
   const { ProdukType, setProdukType, ListProdukType, setListProdukType } =
     useContext(PagesContext);
   const navigate = useNavigate();
+  const { Data } = UseFecth(`http://localhost:5000/ProdukType`)
   const HandleEdit = (id) => {
-    const edit = ListProdukType.find((item) => item.id === id);
-    setProdukType(edit);
-    navigate(`/FormProdukType`);
+    navigate(`/FormProdukType/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListProdukType.filter((item) => item.id !== id);
-    setListProdukType(destroy);
+  const HandleDelete = async (id) => {
+    if(confirm("Hapus Data ?")){
+      try{
+        axios.delete(`http://localhost:5000/ProdukType/${id}`)
+      } catch (err){
+        console.error('Data gagal dihapus :', err)
+      }
+    }
   };
   return (
     <AdminLayout>
@@ -43,7 +49,7 @@ export const ProdukType = () => {
             </tr>
           </thead>
           <tbody>
-            {ListProdukType.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

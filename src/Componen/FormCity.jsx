@@ -1,44 +1,44 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ProdukContext } from "../Context/ProdukProvider";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Prev from "../assets/panah.svg";
-
+import axios from "axios";
+import { UseFecth } from "../hook/UseFecth";
 
 export const FormCity = () => {
   const { City, setCity, ListCity, setListCity } = useContext(ProdukContext);
-  const {ListProvinci,setListProvinci} = useContext(ProdukContext)
-   const navigate = useNavigate();
-  const HandleForm = (e) => {
-    e.preventDefault();
-    if (City.id) {
-      const update = ListCity.map((item) =>
-        item.id === City.id
-          ? {
-              id: City.id,
-              provinci: City.provinci,
-              city: City.city,
-            }
-          : item
-      );
-      setListCity(update);
-    } else {
-      const data = {
-        id: Date.now(),
-        provinci: City.provinci,
-        city: City.city,
-      };
-      setListCity([...ListCity, data]);
+  const { ListProvinci, setListProvinci } = useContext(ProdukContext);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { Data : Provinci } = UseFecth(`http://localhost:5000/Provinci`)
+  useEffect(() => {
+    if (id) {
+      try {
+        axios
+          .get(`http://localhost:5000/City/${id}`)
+          .then((res) => setCity(res.data));
+      } catch (err) {
+        console.error("Data gagal req :", err);
+      }
     }
-    setCity({
-      id: "",
-      provinci: "",
-      city: "",
-    });
+  }, [id]);
+  const HandleForm = async (e) => {
+    e.preventDefault();
+    const mydata = {
+      id: City.id || Date.now().toString(),
+      provinci: City.provinci || "",
+      city: City.city || "",
+    };
+    if (City.id) {
+    await  axios.put(`http://localhost:5000/City/${City.id}`, mydata);
+    } else {
+     await axios.post(`http://localhost:5000/City`, mydata);
+    }
 
     navigate(`/City`);
   };
   return (
-     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
+    <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
         {/* <!-- Header --> */}
         <header className="flex items-center space-x-1 text-xl font-medium">
@@ -51,17 +51,19 @@ export const FormCity = () => {
         {/* <!-- Address Form --> */}
         <form onSubmit={HandleForm} className="space-y-4">
           {/* <!-- Fullname --> */}
-            <select
-                className="w-full border  rounded-xl px-2.5 py-3 text-sm appearance-none  "
-                onChange={(e) => setCity({ ...City, provinci: e.target.value })}
-                value={City.provinci || ""}
-                required
-              >
-                <option value="">Pilih Type</option>
-                {ListProvinci.map((item) => (
-                    <option value={item.provinci} key={item.id}>{item.provinci}</option>
-                ))}
-              </select>
+          <select
+            className="w-full border  rounded-xl px-2.5 py-3 text-sm appearance-none  "
+            onChange={(e) => setCity({ ...City, provinci: e.target.value })}
+            value={City.provinci || ""}
+            required
+          >
+            <option value="">Pilih Type</option>
+            {Provinci.map((item) => (
+              <option value={item.provinci} key={item.id}>
+                {item.provinci}
+              </option>
+            ))}
+          </select>
           <div>
             <label
               htmlFor="name"
@@ -75,9 +77,7 @@ export const FormCity = () => {
               className="w-full border rounded-xl px-2.5 py-3 "
               value={City.city || ""}
               required
-              onChange={(e) =>
-                setCity({ ...City, city: e.target.value })
-              }
+              onChange={(e) => setCity({ ...City, city: e.target.value })}
             />
           </div>
 
@@ -104,5 +104,5 @@ export const FormCity = () => {
         </form>
       </main>
     </div>
-  )
+  );
 };

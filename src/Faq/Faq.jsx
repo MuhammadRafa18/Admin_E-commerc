@@ -2,18 +2,25 @@ import React, { useContext } from "react";
 import { PagesContext } from "../Context/PagesProvider";
 import { AdminLayout } from "../Componen/AdminLayout";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const Faq = () => {
   const { Faq, setFaq, ListFaq, setListFaq } = useContext(PagesContext);
   const navigate = useNavigate();
+  const {Data} = UseFecth(`http://localhost:5000/Faq`)
   const HandleEdit = (id) => {
-    const edit = ListFaq.find((item) => item.id === id);
-    setFaq(edit);
-    navigate(`/FormFaq`);
+    navigate(`/FormFaq/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListFaq.filter((item) => item.id !== id);
-    setListFaq(destroy);
+  const HandleDelete =async (id) => {
+     if(confirm("Hapus data ?")){
+       try{ 
+      await axios.delete(`http://localhost:5000/Faq/${id}`)
+       }catch (err){
+        console.error("Hapu data gagal :", err)
+        alert("hapus data gagal")
+       }
+     }
   };
   return (
     <AdminLayout>
@@ -48,7 +55,7 @@ export const Faq = () => {
             </tr>
           </thead>
           <tbody>
-            {ListFaq.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

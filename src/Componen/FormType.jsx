@@ -1,30 +1,44 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Prev from "../assets/panah.svg";
 import dropdown from "../assets/panah.svg";
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { ProdukContext } from '../Context/ProdukProvider';
+import axios from 'axios';
 
-export const FormType = () => {
+export const FormType =  () => {
     const navigate = useNavigate();
       const { Type, setType, ListType, setListType } = useContext(ProdukContext);
+      const {id} = useParams();
+
+      useEffect(() => {
+         if(id){
+          try{
+             axios
+             .get(`http://localhost:5000/type/${id}`)
+             .then((res) => setType(res.data))
+            }catch{
+             console.error("Get data error :", err)
+          }
+         }
+      },[id])
     
-     const HandleForm = (e) => {
-    e.preventDefault();
-    if(Type.id){
-       const update = ListType.map((item) => item.id === Type.id ? {id:Type.id,type:Type.type} : item ) 
-       setListType(update)
-    }else{
-      const Data = {
-        id:Date.now(),
+     const HandleForm = async (e) => {
+      e.preventDefault();
+       const mydata = {
+        id:Type.id || Date.now().toString(),
         type:Type.type
       }
-      setListType([...ListType, Data]);
-      setType({
+    
+    if(Type.id){
+      await  axios.put(`http://localhost:5000/type/${Type.id}`,mydata)
+    }else{
+    await axios.post(`http://localhost:5000/type`,mydata) 
+  }
+   setType({
         id:"",
         type:""
       }
     )
-  }
   navigate(`/Type`)
     }
     // console.log(ListType)

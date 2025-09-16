@@ -2,18 +2,26 @@ import React, { useContext } from 'react'
 import { AdminLayout } from './AdminLayout'
 import { ProdukContext } from '../Context/ProdukProvider'
 import { useNavigate } from 'react-router'
+import { UseFecth } from '../hook/UseFecth'
+import axios from 'axios'
 
 export const Categories = () => {
   const { ListCategories,setListCategories,Categories,setCategories } = useContext(ProdukContext)
   const navigate = useNavigate();
+  const url = (`http://localhost:5000/category`);
+  const {Data} = UseFecth(url)
   const HandleEdit = (id) => {
-    const edit = ListCategories.find((item) => item.id === id)
-    setCategories(edit)
-    navigate(`/FormCategories`)
+    navigate(`/FormCategories/${id}`)
   }
-  const HandleDelete = (id) => {
-    const destroy = ListCategories.filter((item) => item.id !== id)
-    setListCategories(destroy)
+  const HandleDelete = async (id) => {
+    if(confirm("Hapus Data Category ?"))
+   try{
+       axios.delete(`http://localhost:5000/category/${id}`)
+       alert("Data berhasil dihapus")
+   }catch{
+      console.error("Data gagal di hapus:", err)
+      alert("Data gagal dihapus")
+   }
   }
   return (
     <AdminLayout>
@@ -38,7 +46,7 @@ export const Categories = () => {
              <tbody>
    
            
-               {ListCategories.map((item) => (
+               {Data.map((item) => (
                <tr key={item.id}  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                  <td className="text-center px-6 py-4">{item.category}</td>
                    <td className='text-center px-6 py-4 space-x-3'>

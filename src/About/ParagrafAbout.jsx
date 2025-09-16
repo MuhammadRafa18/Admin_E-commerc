@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { AdminLayout } from "../Componen/AdminLayout";
 import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const ParagrafAbout = () => {
   const {
@@ -10,17 +12,22 @@ export const ParagrafAbout = () => {
     ParagrafAbout,
     setParagrafAbout,
   } = useContext(PagesContext);
+  const {Data} = UseFecth(`http://localhost:5000/ParagrafAbout`)
   const navigate = useNavigate();
   const HandleEdit = (id) => {
-    const edit = ListParagrafAbout.find((item) => item.id === id);
-    setParagrafAbout(edit);
-    navigate(`/FormParagrafAbout`);
+    navigate(`/FormParagrafAbout/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListParagrafAbout.filter((item) => item.id !== id);
-    setListParagrafAbout(destroy);
+  const HandleDelete = async (id) => {
+    if(confirm("Hapus data saya")){
+      try{
+      await axios.delete(`http://localhost:5000/ParagrafAbout/${id}`)
+      }catch (err){
+        console.error("Hapus data gagal : ",err)
+        alert("Hapus data gagal ")
+      }
+    }
   };
-  console.log(ListParagrafAbout)
+ 
   return (
     <AdminLayout>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
@@ -45,7 +52,7 @@ export const ParagrafAbout = () => {
             </tr>
           </thead>
           <tbody>
-            {ListParagrafAbout.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

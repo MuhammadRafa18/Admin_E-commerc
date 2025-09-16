@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { AdminLayout } from "../Componen/AdminLayout";
 import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const ParagrafSection = () => {
   const {
@@ -10,15 +12,20 @@ export const ParagrafSection = () => {
     ParagrafSection,
     setParagrafSection,
   } = useContext(PagesContext);
+  const {Data} = UseFecth(`http://localhost:5000/ParagrafSection`)
   const navigate = useNavigate();
   const HandleEdit = (id) => {
-    const edit = ListParagrafSection.find((item) => item.id === id);
-    setParagrafSection(edit);
-    navigate(`/FormParagrafSection`);
+    navigate(`/FormParagrafSection/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListParagrafSection.filter((item) => item.id !== id);
-    setListParagrafSection(destroy);
+  const HandleDelete = async (id) => {
+    if(confirm("Hapus data ?")){
+      try{
+       await axios.delete(`http://localhost:5000/ParagrafSection/${id}`)
+      } catch(err){
+        console.error("Hapus data gagal :", err)
+        alert("Hapus data gagal ")
+      }
+    }
   };
   return (
     <AdminLayout>
@@ -44,7 +51,7 @@ export const ParagrafSection = () => {
             </tr>
           </thead>
           <tbody>
-            {ListParagrafSection.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

@@ -1,30 +1,34 @@
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router";
 import { ProdukContext } from "../Context/ProdukProvider";
 import Prev from "../assets/panah.svg";
+import axios from "axios";
 
 export const FormDelevery = () => {
   const { Delevery, setDelevery, ListDelevery, setListDelevery } =
     useContext(ProdukContext);
   const navigate = useNavigate();
-  const HandleForm = (e) => {
+  const {id} = useParams();
+  useEffect(() => {
+    if(id){
+      try{
+         axios.get(`http://localhost:5000/delevery/${id}`)
+         .then((res) => setDelevery(res.data))
+      } catch (err) {
+           console.error("Data Delevery ini tidak ada : ", err)
+      }
+    }
+  },[id])
+  const HandleForm = async (e) => {
      e.preventDefault();
-    if (Delevery.id) {
-      const update = ListDelevery.map((item) =>
-        item.id === Delevery.id
-          ? {
-              id: Delevery.id,
-              delevery: Delevery.delevery,
-            }
-          : item
-      );
-      setListDelevery(update);
-    } else {
-      const data = {
-        id: Date.now(),
-        delevery: Delevery.delevery,
+       const mydata = {
+        id: Delevery.id || Date.now().toString() || "",
+        delevery: Delevery.delevery || "",
       };
-      setListDelevery([...ListDelevery, data]);
+    if (Delevery.id) {
+    await axios.put(`http://localhost:5000/delevery/${Delevery.id}`,mydata)
+    } else {
+     await axios.post(`http://localhost:5000/delevery`,mydata)
     }
     setDelevery({
       id: "",

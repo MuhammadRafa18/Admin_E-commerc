@@ -1,35 +1,36 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ProdukContext } from "../Context/ProdukProvider";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Prev from "../assets/panah.svg";
+import axios from "axios";
 
 export const FormProvinci = () => {
   const { Provinci, setProvinci, ListProvinci, setListProvinci } =
     useContext(ProdukContext);
-    const navigate = useNavigate();
-  const HandleForm = (e) => {
-    e.preventDefault();
-    if (Provinci.id) {
-      const update = ListProvinci.map((item) =>
-        item.id === Provinci.id
-          ? {
-              id: Provinci.id,
-              provinci: Provinci.provinci,
-            }
-          : item
-      );
-      setListProvinci(update);
-    } else {
-      const data = {
-        id: Date.now(),
-        provinci: Provinci.provinci,
-      };
-      setListProvinci([...ListProvinci, data]);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (id) {
+      try {
+        axios.get(`http://localhost:5000/Provinci/${id}`)
+        .then((res) => setProvinci(res.data))
+      } catch (err) {
+        console.error("Data gagal request :", err);
+      }
     }
-    setProvinci({
-      id: "",
-      provinci: "",
-    });
+  }, [id]);
+  const HandleForm = async (e) => {
+    e.preventDefault();
+    const mydata = {
+      id: Provinci.id || Date.now().toString(),
+      provinci: Provinci.provinci || "",
+    };
+
+    if (Provinci.id) {
+    await  axios.put(`http://localhost:5000/Provinci/${Provinci.id}`, mydata);
+    } else {
+    await axios.post(`http://localhost:5000/Provinci`, mydata);
+    }
 
     navigate(`/Provinci`);
   };

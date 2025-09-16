@@ -7,8 +7,6 @@ export const ProdukProvider = ({ children }) => {
   const [ListUser, setListUser] = useState([]);
   const [Produk, setProduk] = useState({});
   const [User, setUser] = useState({});
-  const [UserLogin,setUserLogin] = useState({});
-  const [isLogin, setIslogin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [ListCategories, setListCategories] = useState([]);
   const [Categories, setCategories] = useState({});
@@ -44,15 +42,7 @@ export const ProdukProvider = ({ children }) => {
       }
     }
 
-    const Login = localStorage.getItem("isLogin");
-    if (Login) {
-      try {
-        setIslogin(JSON.parse(Login));
-      } catch {
-        console.error("Login error :");
-        setIslogin(null);
-      }
-    }
+   
     const categories = localStorage.getItem("ListCategories");
     if (categories) {
       try {
@@ -107,15 +97,7 @@ export const ProdukProvider = ({ children }) => {
         setListCity([]);
       }
     }
-     const UserLogins = localStorage.getItem("UserLogin");
-    if (UserLogins) {
-      try {
-        setUserLogin(JSON.parse(UserLogins));
-      } catch {
-        console.error("Type erro :");
-        setUserLogin({});
-      }
-    }
+    
     setLoading(false);
   }, []);
 
@@ -126,9 +108,6 @@ export const ProdukProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("ListUser", JSON.stringify(ListUser));
   }, [ListUser]);
-  useEffect(() => {
-    localStorage.setItem("isLogin", JSON.stringify(isLogin));
-  }, [isLogin]);
   useEffect(() => {
     localStorage.setItem("ListCategories", JSON.stringify(ListCategories));
   }, [ListCategories]);
@@ -147,9 +126,7 @@ export const ProdukProvider = ({ children }) => {
  useEffect(() => {
     localStorage.setItem("ListCity", JSON.stringify(ListCity));
   }, [ListCity]);
-   useEffect(() => {
-    localStorage.setItem("UserLogin", JSON.stringify(UserLogin));
-  }, [UserLogin]);
+ 
   return (
     <ProdukContext.Provider
       value={{
@@ -161,8 +138,6 @@ export const ProdukProvider = ({ children }) => {
         setUser,
         ListUser,
         setListUser,
-        isLogin,
-        setIslogin,
         loading,
         setLoading,
         ListCategories,
@@ -188,9 +163,7 @@ export const ProdukProvider = ({ children }) => {
         City,
         setCity,
         ListCity,
-        setListCity,
-        UserLogin,
-        setUserLogin
+        setListCity
       }}
     >
       {children}

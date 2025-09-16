@@ -1,33 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ProdukContext } from '../Context/ProdukProvider';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../Context/AuthContext';
+import axios from 'axios';
 
 export const Login = () => {
  const [account,setAccount] = useState();
- const { ListUser,setIslogin,isLogin,loading,setUserLogin } = useContext(ProdukContext)
  const navigate = useNavigate();
- const HandleLogin = (e) => {
+ const { login } = useContext(AuthContext)
+ const HandleLogin = async (e) => {
     e.preventDefault();
-    const data = {
+    const myuser = {
         email:account.email,
         password:account.password
     };
-   const Check = ListUser.find((item) => item.email === data.email && item.password === data.password ) 
-   if(Check){
-      setIslogin(Check.role)
-      setUserLogin(Check)
-      navigate(`/`)
-   }else {
-       alert("Email dan password salah")
-   } 
+    try{
+      const res =  await axios.post(`http://localhost:5000/login`, myuser)
+      login(res.data.accessToken, res.data.user);
+      navigate("/");
+    }catch (err){
+       alert("Email atau password salah");
+    }
+  
  }
 
- useEffect(() => {
-    if(loading) return;
-    if(isLogin === "Admin" || isLogin === "SuperAdmin"){
-        navigate(`/`)
-    }
- },[isLogin])
+ 
  
 
   return (
