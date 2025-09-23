@@ -4,23 +4,29 @@ import { AdminLayout } from "../Componen/AdminLayout";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const Faq = () => {
   const { Faq, setFaq, ListFaq, setListFaq } = useContext(PagesContext);
   const navigate = useNavigate();
-  const {Data} = UseFecth(`http://localhost:5000/Faq`)
+  const { Data } = UseFecth(`http://localhost:5000/Faq`);
+  const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormFaq/${id}`);
   };
-  const HandleDelete =async (id) => {
-     if(confirm("Hapus data ?")){
-       try{ 
-      await axios.delete(`http://localhost:5000/Faq/${id}`)
-       }catch (err){
-        console.error("Hapu data gagal :", err)
-        alert("hapus data gagal")
-       }
-     }
+  const HandleDelete = async (id) => {
+    if (confirm("Hapus data ?")) {
+      try {
+        await axios.delete(`http://localhost:5000/Faq/${id}`, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
+      } catch (err) {
+        console.error("Hapu data gagal :", err);
+        alert("hapus data gagal");
+      }
+    }
   };
   return (
     <AdminLayout>

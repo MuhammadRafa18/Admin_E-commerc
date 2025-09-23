@@ -4,6 +4,7 @@ import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const ParagrafAbout = () => {
   const {
@@ -13,6 +14,7 @@ export const ParagrafAbout = () => {
     setParagrafAbout,
   } = useContext(PagesContext);
   const {Data} = UseFecth(`http://localhost:5000/ParagrafAbout`)
+    const { token } = useContext (AuthContext) 
   const navigate = useNavigate();
   const HandleEdit = (id) => {
     navigate(`/FormParagrafAbout/${id}`);
@@ -20,7 +22,11 @@ export const ParagrafAbout = () => {
   const HandleDelete = async (id) => {
     if(confirm("Hapus data saya")){
       try{
-      await axios.delete(`http://localhost:5000/ParagrafAbout/${id}`)
+      await axios.delete(`http://localhost:5000/ParagrafAbout/${id}`,{
+          headers: {
+              Authorization: `Bearer ${token}`
+            }
+      })
       }catch (err){
         console.error("Hapus data gagal : ",err)
         alert("Hapus data gagal ")

@@ -4,21 +4,27 @@ import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const ProdukType = () => {
   const { ProdukType, setProdukType, ListProdukType, setListProdukType } =
     useContext(PagesContext);
   const navigate = useNavigate();
-  const { Data } = UseFecth(`http://localhost:5000/ProdukType`)
+  const { Data } = UseFecth(`http://localhost:5000/ProdukType`);
+  const {token} = useContext(AuthContext)
   const HandleEdit = (id) => {
     navigate(`/FormProdukType/${id}`);
   };
   const HandleDelete = async (id) => {
-    if(confirm("Hapus Data ?")){
-      try{
-        axios.delete(`http://localhost:5000/ProdukType/${id}`)
-      } catch (err){
-        console.error('Data gagal dihapus :', err)
+    if (confirm("Hapus Data ?")) {
+      try {
+        axios.delete(`http://localhost:5000/ProdukType/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch (err) {
+        console.error("Data gagal dihapus :", err);
       }
     }
   };

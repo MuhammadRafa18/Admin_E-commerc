@@ -4,25 +4,31 @@ import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const Type = () => {
   const { Type, setType, ListType, setListType } = useContext(ProdukContext);
   const navigate = useNavigate();
-  const url = (`http://localhost:5000/type`)
-  const {Data} = UseFecth(url)
+  const url = `http://localhost:5000/type`;
+  const { Data } = UseFecth(url);
+  const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormType/${id}`);
   };
   const HandleDelete = async (id) => {
-      try{
-         await axios.delete(`http://localhost:5000/type/${id}`)
-         alert("Data berhasil dihapus")
-      }catch{
-        // console.error("Data gagal di hapus :", err)
-        alert("Data gagal dihapus")
-      }
+    try {
+      await axios.delete(`http://localhost:5000/type/${id}`, {
+        headers: {
+          Authorization: `$Bearer ${token}`,
+        },
+      });
+      alert("Data berhasil dihapus");
+    } catch {
+      // console.error("Data gagal di hapus :", err)
+      alert("Data gagal dihapus");
+    }
   };
-    // console.log(ListType)
+  // console.log(ListType)
   return (
     <AdminLayout>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">

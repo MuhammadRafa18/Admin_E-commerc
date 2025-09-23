@@ -3,40 +3,42 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { AdminLayout } from '../Componen/AdminLayout'
 import { ProdukPage } from '../Componen/ProdukPage'
 import { User } from '../Componen/User'
-import { FormProduk } from '../Componen/FormProduk'
-import { FormUser } from '../Componen/FormUser'
-import { Login } from '../Componen/Login'
+import { FormProduk } from '../Componen/form/FormProduk'
+import { FormUser } from '../Componen/form/FormUser'
+import { Login } from '../Componen/auth/Login'
 import { ProdukContext } from '../Context/ProdukProvider'
 import { RouteSuperAdmin } from './RouteSuperAdmin'
 import { Categories } from '../Componen/Categories'
-import { FormCategories } from '../Componen/FormCategories'
-import { FormType } from '../Componen/FormType'
+import { FormCategories } from '../Componen/form/FormCategories'
+import { FormType } from '../Componen/form/FormType'
 import { Type } from '../Componen/Type'
 import { ProdukType } from '../Home/ProdukType'
 import { Result } from '../Home/Result'
-import { FormProdukType } from '../Home/FormProdukType'
-import { FormResult } from '../Home/FormResult'
+import { FormProdukType } from '../Home/form/FormProdukType'
+import { FormResult } from '../Home/form/FormResult'
 import { Section } from '../About/Section'
 import { Power } from '../About/Power'
 import { ParagrafAbout } from '../About/ParagrafAbout'
 import { ParagrafSection } from '../About/ParagrafSection'
-import { FormParagrafSection } from '../About/FormParagrafSection'
-import { FormParagrafAbout } from '../About/FormParagrafAbout'
-import { FormPower } from '../About/FormPower'
-import { FormSection } from '../About/FormSection'
+import { FormParagrafSection } from '../About/form/FormParagrafSection'
+import { FormParagrafAbout } from '../About/form/FormParagrafAbout'
+import { FormPower } from '../About/form/FormPower'
+import { FormSection } from '../About/form/FormSection'
 import { Faq } from '../Faq/Faq'
-import { FormFaq } from '../Faq/FormFaq'
-import { FormPayment } from '../Componen/FormPayment'
+import { FormFaq } from '../Faq/form/FormFaq'
+import { FormPayment } from '../Componen/form/FormPayment'
 import { Payment } from '../Componen/Payment'
 import { Delevery } from '../Componen/Delevery'
-import { FormDelevery } from '../Componen/FormDelevery'
-import { FormProvinci } from '../Componen/FormProvinci'
+import { FormDelevery } from '../Componen/form/FormDelevery'
+import { FormProvinci } from '../Componen/form/FormProvinci'
 import { Provinci } from '../Componen/Provinci'
 import { City } from '../Componen/City'
-import { FormCity } from '../Componen/FormCity'
+import { FormCity } from '../Componen/form/FormCity'
 import { Home } from '../Componen/Home'
 import PrivateRoute from './PrivateRoute'
 import { AuthContext } from '../Context/AuthContext'
+import { DetailFaq } from '../Faq/DetailFaq'
+import { FormDetailFaq } from '../Faq/form/FormDetailFaq'
 
 export const MainRoute = () => {
    const { token } = useContext(AuthContext);
@@ -92,6 +94,9 @@ export const MainRoute = () => {
       <Route path='/FormParagrafSection/:id' element={ <PrivateRoute><FormParagrafSection/></PrivateRoute>  } />
       {/* Route Faq */}
       <Route path='/Faq' element={ <PrivateRoute><Faq/></PrivateRoute>  } />
+      <Route path='/DetailFaq' element={ <PrivateRoute><DetailFaq/></PrivateRoute>  } />
+      <Route path='/FormDetailFaq' element={ <PrivateRoute><FormDetailFaq/></PrivateRoute>  } />
+      <Route path='/FormDetailFaq/:id' element={ <PrivateRoute><FormDetailFaq/></PrivateRoute>  } />
       <Route path='/FormFaq' element={ <PrivateRoute><FormFaq/></PrivateRoute>  } />
       <Route path='/FormFaq/:id' element={ <PrivateRoute><FormFaq/></PrivateRoute>  } />
     </Routes>

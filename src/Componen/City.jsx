@@ -4,19 +4,25 @@ import { useNavigate } from "react-router";
 import { AdminLayout } from "./AdminLayout";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const City = () => {
   const { City, setCity, ListCity, setListCity } = useContext(ProdukContext);
   const navigate = useNavigate();
   const url = `http://localhost:5000/City`;
   const { Data } = UseFecth(url);
+  const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormCity/${id}`);
   };
   const HandleDelete = async (id) => {
     if (id) {
       try {
-        await axios.delete(`http://localhost:5000/City/${id}`);
+        await axios.delete(`http://localhost:5000/City/${id}`, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
         alert("Data berhasi dihapus");
       } catch (err) {
         console.error("Data gagal dihapus :", err);

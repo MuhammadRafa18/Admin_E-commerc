@@ -153,6 +153,9 @@ export const AdminLayout = ({ children }) => {
               <Link to="/Faq" className="block px-2 py-1  hover:underline">
                 Faq
               </Link>
+               <Link to="/DetailFaq" className="block px-2 py-1  hover:underline">
+                DetailFaq
+              </Link>
             </div>
           )}
         </nav>

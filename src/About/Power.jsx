@@ -4,18 +4,24 @@ import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const Power = () => {
   const { ListPower, setListPower, Power, setPower } = useContext(PagesContext);
   const navigate = useNavigate();
   const {Data} = UseFecth(`http://localhost:5000/Power`)
+  const {token} = useContext(AuthContext)
   const HandleEdit = (id) => {
     navigate(`/FormPower/${id}`);
   };
   const HandleDelete = async (id) => {
     if(confirm("Hapus data ?")){
       try{
-       await axios.delete(`http://localhost:5000/Power/${id}`)
+       await axios.delete(`http://localhost:5000/Power/${id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+       })
       }catch(err){
         console.error("Hapus data gagal :", err)
         alert("Hapus data gagal")

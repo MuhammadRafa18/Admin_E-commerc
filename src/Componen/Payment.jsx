@@ -4,24 +4,30 @@ import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const Payment = () => {
   const { Payment, setPayment, ListPayment, setListPayment } =
     useContext(ProdukContext);
-    const url = (`http://localhost:5000/Payment`)
-    const {Data} = UseFecth(url)
+  const url = `http://localhost:5000/Payment`;
+  const { Data } = UseFecth(url);
+  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const HandleEdit = (id) => {
     navigate(`/FormPayment/${id}`);
   };
   const HandleDelete = async (id) => {
-    if(confirm("Hapus Data ? ")){
-      try{
-        await axios.delete(`http://localhost:5000/Payment/${id}`)
-        alert("Hapus Data berhasil")
-      }catch (err){
-        console.error("Data gagal : ", err)
-        alert("Data Gagal dihapus")
+    if (confirm("Hapus Data ? ")) {
+      try {
+        await axios.delete(`http://localhost:5000/Payment/${id}`, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
+        alert("Hapus Data berhasil");
+      } catch (err) {
+        console.error("Data gagal : ", err);
+        alert("Data Gagal dihapus");
       }
     }
   };

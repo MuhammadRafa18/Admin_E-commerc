@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { ProdukContext } from "../Context/ProdukProvider";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const ProdukPage = () => {
   const { ListProduk, setListProduk, setProduk } = useContext(ProdukContext);
   const navigate = useNavigate();
   const url = `http://localhost:5000/produk`;
   const { Data } = UseFecth(url);
+  const { token } = useContext(AuthContext);
   const HandleUpdate = (id) => {
     navigate(`/FormProduk/${id}`);
   };
@@ -17,7 +19,11 @@ export const ProdukPage = () => {
   const HandleDelete = async (id) => {
     if (confirm("Hapus Data?")) {
       try {
-        await axios.delete(`http://localhost:5000/produk/${id}`);
+        await axios.delete(`http://localhost:5000/produk/${id}`, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
       } catch {
         console.error("Gagal hapus produk:", err);
         alert("Gagal hapus produk ❌");
@@ -41,7 +47,10 @@ export const ProdukPage = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className=" text-center px-6 py-3">
-                Gambar
+                Gambar Produk
+              </th>
+               <th scope="col" className=" text-center px-6 py-3">
+                Gambar Banner
               </th>
               <th scope="col" className="text-center px-6 py-3">
                 Nama
@@ -50,12 +59,15 @@ export const ProdukPage = () => {
                 Category
               </th>
               <th scope="col" className="text-center px-6 py-3">
+                type
+              </th>
+              <th scope="col" className="text-center px-6 py-3">
                 price
               </th>
               <th scope="col" className="text-center px-6 py-3">
                 size
               </th>
-               <th scope="col" className="text-center px-6 py-3">
+              <th scope="col" className="text-center px-6 py-3">
                 Rating
               </th>
               <th scope="col" className="text-center px-6 py-3">
@@ -71,13 +83,17 @@ export const ProdukPage = () => {
               Data.map((item) => (
                 <tr
                   key={item.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+                  className=" bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
                 >
-                  <td className="flex justify-center items-center">
-                    <img src={item.gambar} alt="" className="w-10" />
+                  <td className="px-6 py-4 text-center">
+                    <img src={item.imageproduk} alt="" className="w-10 mx-auto" />
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <img src={item.imagebanner} alt="" className="w-10 mx-auto" />
                   </td>
                   <td className="text-center px-6 py-4">{item.title}</td>
                   <td className="text-center px-6 py-4">{item.category}</td>
+                  <td className="text-center px-6 py-4">{item.type}</td>
                   <td className="text-center px-6 py-4">{item.price}</td>
                   <td className="text-center px-6 py-4">{item.size}</td>
                   <td className="text-center px-6 py-4">{item.rating}</td>

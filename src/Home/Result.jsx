@@ -4,19 +4,25 @@ import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const Result = () => {
   const { ListResult, setListResult, Result, setResult } =
     useContext(PagesContext);
   const navigate = useNavigate();
   const { Data } = UseFecth(`http://localhost:5000/Result`);
+  const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormResult/${id}`);
   };
   const HandleDelete = async (id) => {
     if (confirm("Hapus data ? ")) {
       try {
-        await axios.delete(`http://localhost:5000/Result/${id}`);
+        await axios.delete(`http://localhost:5000/Result/${id}`, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
       } catch (err) {
         console.error("Data gagal dihapus :", err);
       }

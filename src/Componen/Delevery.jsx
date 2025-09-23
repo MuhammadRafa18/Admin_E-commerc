@@ -4,24 +4,30 @@ import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const Delevery = () => {
   const { Delevery, setDelevery, ListDelevery, setListDelevery } =
     useContext(ProdukContext);
   const navigate = useNavigate();
-  const url = (`http://localhost:5000/delevery`)
-  const {Data} = UseFecth(url)
+  const url = `http://localhost:5000/delevery`;
+  const { Data } = UseFecth(url);
+  const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormDelevery/${id}`);
   };
   const HandleDelete = async (id) => {
-    if(confirm("Hapus Data delevery ? ")){
-      try{
-        await axios.delete(`http://localhost:5000/delevery/${id}`)
-        alert("Data berhasil diproses")
+    if (confirm("Hapus Data delevery ? ")) {
+      try {
+        await axios.delete(`http://localhost:5000/delevery/${id}`, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
+        alert("Data berhasil diproses");
       } catch (err) {
-        console.error("Data gagal di hapus : ", err)
-        alert("Gagal Hapus Data")
+        console.error("Data gagal di hapus : ", err);
+        alert("Gagal Hapus Data");
       }
     }
   };

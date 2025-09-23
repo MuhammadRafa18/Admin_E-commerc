@@ -4,27 +4,33 @@ import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
 
 export const Provinci = () => {
   const { Provinci, setProvinci, ListProvinci, setListProvinci } =
     useContext(ProdukContext);
-    const url = (`http://localhost:5000/Provinci`)
-    const {Data} = UseFecth(url)
+  const url = `http://localhost:5000/Provinci`;
+  const { Data } = UseFecth(url);
   const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormProvinci/${id}`);
   };
   const HandleDelete = async (id) => {
-     if(confirm("Hapus data ?")){
-      try{
-         axios.delete(`http://localhost:5000/Provinci/${id}`)
-      }catch (err) {
-        console.error("Data gagal dihapus :", err)
+    if (confirm("Hapus data ?")) {
+      try {
+        axios.delete(`http://localhost:5000/Provinci/${id}`, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
+      } catch (err) {
+        console.error("Data gagal dihapus :", err);
       }
-     }
+    }
   };
-  return ( 
-  <AdminLayout>
+  return (
+    <AdminLayout>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
         <button
           onClick={() => {
@@ -72,6 +78,6 @@ export const Provinci = () => {
           </tbody>
         </table>
       </div>
-  </AdminLayout>
-  )
+    </AdminLayout>
+  );
 };

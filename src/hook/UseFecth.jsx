@@ -1,9 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, {  useContext, useEffect, useState } from "react";
+import { AuthContext } from "../Context/AuthContext";
 
 export const UseFecth = (url) => {
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { token } = useContext (AuthContext) 
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
@@ -12,6 +14,9 @@ export const UseFecth = (url) => {
         try {
           const res = await axios.get(url, {
             signal: controller.signal,
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
           });
           setLoading(false);
           setData(res.data);

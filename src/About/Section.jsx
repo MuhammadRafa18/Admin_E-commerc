@@ -1,23 +1,38 @@
-import React, { useContext } from 'react'
-import { AdminLayout } from '../Componen/AdminLayout'
-import { PagesContext } from '../Context/PagesProvider'
-import { useNavigate } from 'react-router'
+import React, { useContext } from "react";
+import { AdminLayout } from "../Componen/AdminLayout";
+import { PagesContext } from "../Context/PagesProvider";
+import { useNavigate } from "react-router";
+import { AuthContext } from "../Context/AuthContext";
+import { UseFecth } from "../hook/UseFecth";
+import axios from "axios";
 
 export const Section = () => {
-    const {ListSection, setListSection,Section, setSection} = useContext(PagesContext)
-     const navigate = useNavigate();
-      const HandleEdit = (id) => {
-    const edit = ListSection.find((item) => item.id === id);
-    setSection(edit);
-    navigate(`/FormSection`);
+  const { ListSection, setListSection, Section, setSection } =
+    useContext(PagesContext);
+  const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
+  const { Data } = UseFecth(`http://localhost:5000/Section`);
+  const HandleEdit = (id) => {
+    navigate(`/FormSection/${id}`);
   };
-  const HandleDelete = (id) => {
-    const destroy = ListSection.filter((item) => item.id !== id);
-    setListSection(destroy);   
+  const HandleDelete = async (id) => {
+    if (confirm("Hapus data ?")) {
+      try {
+        await axios.delete(`http://localhost:5000/Section/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        alert("Hapus Data sukses");
+      } catch (err) {
+        console.error("Hapus data gagal :", err);
+        alert("Hapus Data gagal dihapus");
+      }
+    }
   };
   return (
     <AdminLayout>
-        <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
+      <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
         <button
           onClick={() => {
             setSection({});
@@ -39,7 +54,7 @@ export const Section = () => {
             </tr>
           </thead>
           <tbody>
-            {ListSection.map((item) => (
+            {Data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
@@ -67,5 +82,5 @@ export const Section = () => {
         </table>
       </div>
     </AdminLayout>
-  )
-}
+  );
+};
