@@ -10,13 +10,7 @@ export const ProdukProvider = ({ children }) => {
   const [Categories, setCategories] = useState({});
 
   const [Type, setType] = useState({});
-  const [Payment, setPayment] = useState({});
 
-  const [Delevery, setDelevery] = useState({});
-
-  const [Provinci, setProvinci] = useState({});
-
-  const [City, setCity] = useState({});
 
   return (
     <ProdukContext.Provider
@@ -29,23 +23,10 @@ export const ProdukProvider = ({ children }) => {
         setDetailFaq,
         loading,
         setLoading,
-
         Categories,
         setCategories,
         Type,
         setType,
-
-        Payment,
-        setPayment,
-
-        Delevery,
-        setDelevery,
-
-        Provinci,
-        setProvinci,
-
-        City,
-        setCity,
       }}
     >
       {children}

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { AdminLayout } from "./AdminLayout";
 import { ProdukContext } from "../Context/ProdukProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
+import { Layouts } from "../Layouts/Layouts";
 
 export const Type = () => {
   const { Type, setType, ListType, setListType } = useContext(ProdukContext);
@@ -30,7 +30,7 @@ export const Type = () => {
   };
   // console.log(ListType)
   return (
-    <AdminLayout>
+    <Layouts>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
         <button
           onClick={() => {
@@ -78,6 +78,6 @@ export const Type = () => {
           </tbody>
         </table>
       </div>
-    </AdminLayout>
+    </Layouts>
   );
 };

@@ -71,6 +71,10 @@ export const FormProduk = () => {
         size: Produk.size || "",
         rating: Produk.rating || 0,
         stok: Produk.stok || 0,
+        typeProduk: Produk.typeProduk || "",
+        description:Produk.description || "",
+        useproduk:Produk.useproduk || "",
+        ingredient:Produk.ingredient || ""
       };
 
       if (Produk.id) {
@@ -113,168 +117,268 @@ export const FormProduk = () => {
         {/* <!-- Address Form --> */}
         <form onSubmit={HandleForm} className="space-y-4">
           {/* <!-- Fullname --> */}
-          {Produk.id ? <img src={Produk.imageproduk} className="w-10" /> : null}
-          <div>
-            <label
-              htmlFor="ImageProduk"
-              className="block font-medium mb-1 text-base cursor-pointer"
-            >
-              ImageProduk
-            </label>
-            <input
-              id="ImageProduk"
-              type="file"
-              className="w-full border rounded-xl px-2.5 py-3"
-              required={!Produk.id}
-              onChange={(e) => handleFileChange(e, "Produk")}
-            />
-          </div>
-          {Produk.id ? <img src={Produk.imagebanner} className="w-10" /> : null}
-          <div>
-            <label
-              htmlFor="ImageBanner"
-              className="block font-medium mb-1 text-base cursor-pointer"
-            >
-              ImageBanner
-            </label>
-            <input
-              id="ImageBanner"
-              type="file"
-              className="w-full border rounded-xl px-2.5 py-3"
-              required={!Produk.id}
-              onChange={(e) => handleFileChange(e, "Banner")}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="name"
-              className="block font-medium mb-1 text-base cursor-pointer"
-            >
-              Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 "
-              value={Produk.title || ""}
-              required
-              onChange={(e) => setProduk({ ...Produk, title: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2 mb-4">
-            <label className="text-base block">Type</label>
-            <div className="relative group">
-              <img
-                src={dropdown}
-                alt=""
-                className="absolute right-3 bottom-4  "
-              />
-              <select
-                className="w-full border  rounded-xl px-2.5 py-3 text-sm appearance-none  "
-                onChange={(e) => setProduk({ ...Produk, type: e.target.value })}
-                value={Produk.type || ""}
-                required
+          <div className="flex items-center space-x-3">
+            <div className="w-1/2">
+              {Produk.id ? (
+                <img src={Produk.imageproduk} className="w-10" />
+              ) : null}
+              <label
+                htmlFor="ImageProduk"
+                className="block font-medium mb-1 text-base cursor-pointer"
               >
-                <option value="">Pilih Type</option>
-                {type?.length > 0 &&
-                  type.map((item) => (
-                    <option key={item.id} value={item.type}>
-                      {item.type}
-                    </option>
-                  ))}
-              </select>
+                ImageProduk
+              </label>
+              <input
+                id="ImageProduk"
+                type="file"
+                className="w-full border rounded-xl px-2.5 py-3"
+                required={!Produk.id}
+                onChange={(e) => handleFileChange(e, "Produk")}
+              />
+            </div>
+            <div className="w-1/2">
+              {Produk.id ? (
+                <img src={Produk.imagebanner} className="w-10" />
+              ) : null}
+              <label
+                htmlFor="ImageBanner"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                ImageBanner
+              </label>
+              <input
+                id="ImageBanner"
+                type="file"
+                className="w-full border rounded-xl px-2.5 py-3"
+                required={!Produk.id}
+                onChange={(e) => handleFileChange(e, "Banner")}
+              />
             </div>
           </div>
-          <div className="space-y-2 mb-4">
-            <label className="text-base block">Category</label>
-            <div className="relative group">
-              <img
-                src={dropdown}
-                alt=""
-                className="absolute right-3 bottom-4  "
-              />
-              <select
-                className="w-full border  rounded-xl px-2.5 py-3 text-sm appearance-none  "
+          <div className="flex items-center space-x-3">
+            <div className="w-1/2">
+              <label
+                htmlFor="name"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                Name Produk
+              </label>
+              <input
+                id="name"
+                type="text"
+                placeholder="Name Produk"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                value={Produk.title || ""}
+                required
                 onChange={(e) =>
-                  setProduk({ ...Produk, category: e.target.value })
+                  setProduk({ ...Produk, title: e.target.value })
                 }
-                value={Produk.category || ""}
-                required
-              >
-                <option value="">Pilih Category</option>
-                {category?.length > 0 &&
-                  category.map((item) => (
-                    <option key={item.id} value={item.category}>
-                      {item.category}
-                    </option>
-                  ))}
-              </select>
+              />
+            </div>
+            <div className="w-1/2">
+              <label className="text-base block">Type</label>
+              <div className="relative group">
+                <img
+                  src={dropdown}
+                  alt=""
+                  className="absolute right-3 bottom-4  "
+                />
+                <select
+                  className="w-full border  rounded-xl px-2.5 py-3.5 text-sm appearance-none  "
+                  onChange={(e) =>
+                    setProduk({ ...Produk, type: e.target.value })
+                  }
+                  value={Produk.type || ""}
+                  required
+                >
+                  <option value="">Pilih Type</option>
+                  {type?.length > 0 &&
+                    type.map((item) => (
+                      <option key={item.id} value={item.type}>
+                        {item.type}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
           </div>
-          <div>
-            <label
-              htmlFor="size"
-              className="block font-medium mb-1 text-base cursor-pointer"
-            >
-              Size
-            </label>
-            <input
-              id="size"
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 "
-              onChange={(e) => setProduk({ ...Produk, size: e.target.value })}
-              value={Produk.size || ""}
-              required
-            />
+          <div className="flex items-center space-x-3">
+            <div className="w-1/2 space-y-2 ">
+              <label className="text-base block">Category</label>
+              <div className="relative group">
+                <img
+                  src={dropdown}
+                  alt=""
+                  className="absolute right-3 bottom-4  "
+                />
+                <select
+                  className="w-full border  rounded-xl px-2.5 py-3.5 text-sm appearance-none  "
+                  onChange={(e) =>
+                    setProduk({ ...Produk, category: e.target.value })
+                  }
+                  value={Produk.category || ""}
+                  required
+                >
+                  <option value="">Pilih Category</option>
+                  {category?.length > 0 &&
+                    category.map((item) => (
+                      <option key={item.id} value={item.category}>
+                        {item.category}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+            <div className="w-1/2">
+              <label
+                htmlFor="size"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                Size
+              </label>
+              <input
+                id="size"
+                type="text"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                onChange={(e) => setProduk({ ...Produk, size: e.target.value })}
+                value={Produk.size || ""}
+                required
+              />
+            </div>
           </div>
-          <div>
-            <label
-              htmlFor="price"
-              className="block font-medium mb-1 text-base cursor-pointer"
-            >
-              Price
-            </label>
-            <input
-              id="price"
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 "
-              onChange={(e) => setProduk({ ...Produk, price: e.target.value })}
-              value={Produk.price || ""}
-              required
-            />
+          <div className="flex items-center space-x-3">
+            <div className="w-1/2">
+              <label
+                htmlFor="price"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                Price
+              </label>
+              <input
+                id="price"
+                type="text"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                onChange={(e) =>
+                  setProduk({ ...Produk, price: e.target.value })
+                }
+                value={Produk.price || ""}
+                required
+              />
+            </div>
+            <div className="w-1/2">
+              <label
+                htmlFor="rating"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                Rating
+              </label>
+              <input
+                id="rating"
+                type="text"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                onChange={(e) =>
+                  setProduk({ ...Produk, rating: e.target.value })
+                }
+                required
+                value={Produk.rating || ""}
+              />
+            </div>
           </div>
-          <div>
-            <label
-              htmlFor="rating"
-              className="block font-medium mb-1 text-base cursor-pointer"
-            >
-              Rating
-            </label>
-            <input
-              id="rating"
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 "
-              onChange={(e) => setProduk({ ...Produk, rating: e.target.value })}
-              required
-              value={Produk.rating || ""}
-            />
+          <div className="flex items-center space-x-3">
+            <div className="w-1/2 space-y-2 ">
+              <label className="text-base block">Type Produk</label>
+              <div className="relative group">
+                <img
+                  src={dropdown}
+                  alt=""
+                  className="absolute right-3 bottom-4  "
+                />
+                <select
+                  className="w-full border  rounded-xl px-2.5 py-3.5 text-sm appearance-none  "
+                  onChange={(e) =>
+                    setProduk({ ...Produk, typeProduk: e.target.value })
+                  }
+                  value={Produk.typeProduk || ""}
+                  required
+                >
+                  <option value="">Pilih Type Produk</option>
+                    <option  value="Bestseller">Bestseller</option>
+                    <option  value="New Product">New Product</option>
+                    <option  value="Normal Product">Normal Product</option>
+                </select>
+              </div>
+            </div>
+            <div className="w-1/2">
+              <label
+                htmlFor="stok"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                Stok
+              </label>
+              <input
+                id="stok"
+                type="text"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                onChange={(e) => setProduk({ ...Produk, stok: e.target.value })}
+                required
+                value={Produk.stok || ""}
+              />
+            </div>
           </div>
-          <div>
-            <label
-              htmlFor="stok"
-              className="block font-medium mb-1 text-base cursor-pointer"
-            >
-              Stok
-            </label>
-            <input
-              id="stok"
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 "
-              onChange={(e) => setProduk({ ...Produk, stok: e.target.value })}
-              required
-              value={Produk.stok || ""}
-            />
-          </div>
+            <div>
+              <label
+                htmlFor="name"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                Deskripsi
+              </label>
+              <textarea
+                id="name"
+                placeholder="Name Produk"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                value={Produk.description || ""}
+                required
+                onChange={(e) =>
+                  setProduk({ ...Produk, description: e.target.value })
+                }
+              />
+            </div>
+             <div>
+              <label
+                htmlFor="name"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                How To Use
+              </label>
+              <textarea
+                id="name"
+                placeholder="Name Produk"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                value={Produk.useproduk || ""}
+                required
+                onChange={(e) =>
+                  setProduk({ ...Produk, useproduk: e.target.value })
+                }
+              />
+            </div>
+             <div>
+              <label
+                htmlFor="name"
+                className="block font-medium mb-1 text-base cursor-pointer"
+              >
+                Ingredient
+              </label>
+              <textarea
+                id="name"
+                placeholder="Name Produk"
+                className="w-full border rounded-xl px-2.5 py-3 "
+                value={Produk.ingredient || ""}
+                required
+                onChange={(e) =>
+                  setProduk({ ...Produk, ingredient: e.target.value })
+                }
+              />
+            </div>
 
           {/* <!-- Buttons --> */}
           <div className="w-full flex space-x-3 mt-6">

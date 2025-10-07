@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
-import { AdminLayout } from "../Componen/AdminLayout";
+
 import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
+import { Layouts } from "../Layouts/Layouts";
 
 export const ParagrafAbout = () => {
   const {
@@ -13,29 +14,29 @@ export const ParagrafAbout = () => {
     ParagrafAbout,
     setParagrafAbout,
   } = useContext(PagesContext);
-  const {Data} = UseFecth(`http://localhost:5000/ParagrafAbout`)
-    const { token } = useContext (AuthContext) 
+  const { Data } = UseFecth(`http://localhost:5000/ParagrafAbout`);
+  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const HandleEdit = (id) => {
     navigate(`/FormParagrafAbout/${id}`);
   };
   const HandleDelete = async (id) => {
-    if(confirm("Hapus data saya")){
-      try{
-      await axios.delete(`http://localhost:5000/ParagrafAbout/${id}`,{
+    if (confirm("Hapus data saya")) {
+      try {
+        await axios.delete(`http://localhost:5000/ParagrafAbout/${id}`, {
           headers: {
-              Authorization: `Bearer ${token}`
-            }
-      })
-      }catch (err){
-        console.error("Hapus data gagal : ",err)
-        alert("Hapus data gagal ")
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch (err) {
+        console.error("Hapus data gagal : ", err);
+        alert("Hapus data gagal ");
       }
     }
   };
- 
+  console.log(Data)
   return (
-    <AdminLayout>
+    <Layouts>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
         <button
           onClick={() => {
@@ -50,7 +51,22 @@ export const ParagrafAbout = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className=" text-center px-6 py-3">
-                Paragraf About
+                Image About
+              </th>
+              <th scope="col" className=" text-center px-6 py-3">
+                Paragraf About 1
+              </th>
+              <th scope="col" className=" text-center px-6 py-3">
+                Paragraf About 2
+              </th>
+              <th scope="col" className=" text-center px-6 py-3">
+                Paragraf About 3
+              </th>
+              <th scope="col" className=" text-center px-6 py-3">
+                Paragraf About 4
+              </th>
+              <th scope="col" className=" text-center px-6 py-3">
+                Paragraf About 5
               </th>
               <th scope="col" className=" text-center px-6 py-3">
                 Action
@@ -63,7 +79,14 @@ export const ParagrafAbout = () => {
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               >
-                <td className="text-center px-6 py-4">{item.paragraf}</td>
+                <td className="px-6 py-4 text-center">
+                  <img src={item.gambar} alt="" className="w-10 mx-auto" />
+                </td>
+                <td className="text-center px-6 py-4">{item.paragraf1}</td>
+                <td className="text-center px-6 py-4">{item.paragraf2}</td>
+                <td className="text-center px-6 py-4">{item.paragraf3}</td>
+                <td className="text-center px-6 py-4">{item.paragraf4}</td>
+                <td className="text-center px-6 py-4">{item.paragraf5}</td>
                 <td className="text-center px-6 py-4 space-x-3">
                   <button
                     onClick={() => HandleEdit(item.id)}
@@ -83,6 +106,6 @@ export const ParagrafAbout = () => {
           </tbody>
         </table>
       </div>
-    </AdminLayout>
+    </Layouts>
   );
 };

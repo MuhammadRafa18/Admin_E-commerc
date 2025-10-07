@@ -65,7 +65,7 @@ export const FormPower = () => {
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
         {/* <!-- Header --> */}
         <header className="flex items-center space-x-1 text-xl font-medium">
-          <Link to="/ProdukType">
+          <Link to="/Power">
             <img src={Prev} alt="" className="rotate-90 w-6 self-start mb-1" />
           </Link>
           <h1>{Power.id ? "Update Produk" : "Add Produk"}</h1>

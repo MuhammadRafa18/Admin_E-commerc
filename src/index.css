@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 
 @theme {
  --font-sans: 'Sora', 'sans-serif';
@@ -12,4 +14,8 @@
 
 body {
   @apply font-sans;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;     
 }

@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
-import { AdminLayout } from "../Componen/AdminLayout";
+
 import { PagesContext } from "../Context/PagesProvider";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
+import { Layouts } from "../Layouts/Layouts";
 
 export const Power = () => {
   const { ListPower, setListPower, Power, setPower } = useContext(PagesContext);
@@ -30,7 +31,7 @@ export const Power = () => {
   };
 
   return (
-    <AdminLayout>
+    <Layouts>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
         <button
           onClick={() => {
@@ -84,6 +85,6 @@ export const Power = () => {
           </tbody>
         </table>
       </div>
-    </AdminLayout>
+    </Layouts>
   );
 };

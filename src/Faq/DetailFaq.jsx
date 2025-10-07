@@ -2,9 +2,9 @@ import React, { useContext } from 'react'
 import { useNavigate } from 'react-router';
 import { UseFecth } from '../hook/UseFecth';
 import { AuthContext } from '../Context/AuthContext';
-import { AdminLayout } from '../Componen/AdminLayout';
 import { ProdukContext } from '../Context/ProdukProvider';
 import axios from 'axios';
+import { Layouts } from '../Layouts/Layouts';
 
 export const DetailFaq = () => {
    const navigate = useNavigate();
@@ -30,7 +30,7 @@ export const DetailFaq = () => {
       }
     };
     return (
-      <AdminLayout>
+      <Layouts>
         <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
           <button
             onClick={() => {
@@ -86,6 +86,6 @@ export const DetailFaq = () => {
             </tbody>
           </table>
         </div>
-      </AdminLayout>
+      </Layouts>
     );
 }

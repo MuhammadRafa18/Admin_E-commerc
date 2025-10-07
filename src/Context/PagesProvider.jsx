@@ -5,36 +5,33 @@ export const PagesContext = createContext();
 export const PagesProvider = ({ children }) => {
   const [ProdukType, setProdukType] = useState({});
 
-  const [loading, setloading] = useState(true);
-  const [Result, setResult] = useState({});
-
-  const [Section, setSection] = useState({});
-
-  const [ParagrafSection, setParagrafSection] = useState({});
+  const [Banner, setBanner] = useState({});
+  const [VisiMisi, setVisiMisi] = useState({});
 
   const [ParagrafAbout, setParagrafAbout] = useState({});
 
   const [Power, setPower] = useState({});
 
   const [Faq, setFaq] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
     <PagesContext.Provider
       value={{
-       ProdukType, 
-       setProdukType,
-        Result,
-        setResult,
-        Section,
-        setSection,
-        ParagrafSection,
-        setParagrafSection,
+        ProdukType,
+        setProdukType,
         ParagrafAbout,
         setParagrafAbout,
         Power,
         setPower,
         Faq,
         setFaq,
+        VisiMisi,
+        setVisiMisi,
+        Banner,
+        setBanner,
+        isSidebarOpen, 
+        setIsSidebarOpen,
       }}
     >
       {children}
