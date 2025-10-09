@@ -91,6 +91,9 @@ export const Layouts = ({ children }) => {
                 <Link to="/Banner" className="block px-2 py-1  hover:underline">
                   Banner
                 </Link>
+                <Link to="/Result" className="block px-2 py-1  hover:underline">
+                  Result
+                </Link>
               </div>
             )}
             <button

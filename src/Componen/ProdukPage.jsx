@@ -66,6 +66,9 @@ export const ProdukPage = () => {
                 type
               </th>
               <th scope="col" className="text-center px-6 py-3">
+                Type Produk
+              </th>
+              <th scope="col" className="text-center px-6 py-3">
                 price
               </th>
               <th scope="col" className="text-center px-6 py-3">
@@ -110,6 +113,7 @@ export const ProdukPage = () => {
                   <td className="text-center px-6 py-4">{item.title}</td>
                   <td className="text-center px-6 py-4">{item.category}</td>
                   <td className="text-center px-6 py-4">{item.type}</td>
+                  <td className="text-center px-6 py-4">{item.typeProduk}</td>
                   <td className="text-center px-6 py-4">{item.price}</td>
                   <td className="text-center px-6 py-4">{item.size}</td>
                   <td className="text-center px-6 py-4">{item.rating}</td>

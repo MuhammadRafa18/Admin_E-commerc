@@ -12,17 +12,20 @@ export const Order = () => {
 
     if (item.status === "Pending" && confirm("Terima Pesanan ?")) {
       newStatus = "Dipersiapkan";
-      await axios.patch(`http://localhost:5000/Order/${item.id}`, {
+      const res = await axios.patch(`http://localhost:5000/Order/${item.id}`, {
         status: newStatus,
-      });
+      }); 
+      setData((prev) => prev.map((p) => (p.id === item.id ? res.data : p)))
     } else if (item.status === "Dipersiapkan") {
       const inputResi = prompt("Masukkan nomor resi pengiriman:");
       if (!inputResi) return; // batal
       newStatus = "Dalam Pengiriman";
-      await axios.patch(`http://localhost:5000/Order/${item.id}`, {
+      const res =  await axios.patch(`http://localhost:5000/Order/${item.id}`, {
         status: newStatus,
         trackingNumber: inputResi,
       });
+      setData((prev) => prev.map((p) => (p.id === item.id ? res.data : p)))
+
 
       return;
     }

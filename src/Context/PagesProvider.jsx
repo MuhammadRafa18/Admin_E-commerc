@@ -9,7 +9,7 @@ export const PagesProvider = ({ children }) => {
   const [VisiMisi, setVisiMisi] = useState({});
 
   const [ParagrafAbout, setParagrafAbout] = useState({});
-
+  const [Result,setResult] = useState([]);
   const [Power, setPower] = useState({});
 
   const [Faq, setFaq] = useState({});
@@ -32,6 +32,8 @@ export const PagesProvider = ({ children }) => {
         setBanner,
         isSidebarOpen, 
         setIsSidebarOpen,
+        Result,
+        setResult,
       }}
     >
       {children}

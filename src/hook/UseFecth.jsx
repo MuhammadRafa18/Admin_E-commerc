@@ -33,5 +33,5 @@ export const UseFecth = (url) => {
     };
   }, [url]);
 
-  return { Data };
+  return { Data,setData};
 };

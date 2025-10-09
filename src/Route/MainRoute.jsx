@@ -28,6 +28,8 @@ import { FormDetailFaq } from '../Faq/form/FormDetailFaq'
 import { Banner } from '../Home/Banner'
 import { FormBanner } from '../Home/form/FormBanner'
 import { Order } from '../Order/Order'
+import { FormResult } from '../Home/form/FormResult'
+import { Result } from '../Home/Result'
 
 export const MainRoute = () => {
    const { token } = useContext(AuthContext);
@@ -56,6 +58,9 @@ export const MainRoute = () => {
       <Route path='/Banner' element={ <PrivateRoute><Banner/></PrivateRoute>} />
       <Route path='/FormBanner' element={ <PrivateRoute><FormBanner/></PrivateRoute>} />
       <Route path='/FormBanner/:id' element={ <PrivateRoute><FormBanner/></PrivateRoute>} />
+      <Route path='/FormResult/' element={ <PrivateRoute><FormResult/></PrivateRoute>} />
+      <Route path='/FormResult/:id' element={ <PrivateRoute><FormResult/></PrivateRoute>} />
+      <Route path='/Result' element={ <PrivateRoute><Result/></PrivateRoute>} />
       {/* Route About */}
       <Route path='/Power' element={ <PrivateRoute><Power/>  </PrivateRoute>} />
       <Route path='/FormPower' element={ <PrivateRoute><FormPower/> </PrivateRoute> } />
