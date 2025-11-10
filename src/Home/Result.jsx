@@ -9,7 +9,7 @@ import { Layouts } from "../Layouts/Layouts";
 export const Result = () => {
   const {Result,setResult} = useContext(PagesContext);
   const navigate = useNavigate();
-  const { Data } = UseFecth(`http://localhost:5000/result`);
+  const { Data } = UseFecth(`http://127.0.0.1:8000/api/result`);
   const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormResult/${id}`);
@@ -17,7 +17,7 @@ export const Result = () => {
   const HandleDelete = async (id) => {
     if (confirm("Hapus Data ?")) {
       try {
-        axios.delete(`http://localhost:5000/result/${id}`, {
+        axios.delete(`http://127.0.0.1:8000/api/result/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -52,13 +52,14 @@ export const Result = () => {
             </tr>
           </thead>
           <tbody>
-            {Data.map((item) => (
+            {Data?.data?.length > 0 &&
+            Data.data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               >
                 <td className="flex justify-center items-center">
-                  <img src={item.result} alt="" className="w-10" />
+                  <img src={`http://127.0.0.1:8000/storage/${item.result}`} alt="" className="w-10" />
                 </td>
                 <td className="text-center px-6 py-4 space-x-3">
                   <button

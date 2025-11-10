@@ -7,11 +7,10 @@ import { AuthContext } from "../Context/AuthContext";
 import { Layouts } from "../Layouts/Layouts";
 
 export const Categories = () => {
-  const { ListCategories, setListCategories, Categories, setCategories } =
-    useContext(ProdukContext);
+  const { setCategories } = useContext(ProdukContext);
   const navigate = useNavigate();
-  const url = `http://localhost:5000/category`;
-  const { Data } = UseFecth(url);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/category`);
   const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormCategories/${id}`);
@@ -19,7 +18,7 @@ export const Categories = () => {
   const HandleDelete = async (id) => {
     if (confirm("Hapus Data Category ?"))
       try {
-        axios.delete(`http://localhost:5000/category/${id}`, {
+        axios.delete(`${api}/category/${id}`, {
           headers: {
             Authorization: `$Bearer ${token}`,
           },
@@ -54,7 +53,8 @@ export const Categories = () => {
             </tr>
           </thead>
           <tbody>
-            {Data.map((item) => (
+            {Data?.data?.length > 0 &&
+            Data.data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

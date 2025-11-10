@@ -7,18 +7,18 @@ import { AuthContext } from "../Context/AuthContext";
 import { Layouts } from "../Layouts/Layouts";
 
 export const ProdukType = () => {
-  const { ProdukType, setProdukType, ListProdukType, setListProdukType } =
-    useContext(PagesContext);
+  const { setProdukType } = useContext(PagesContext);
   const navigate = useNavigate();
-  const { Data } = UseFecth(`http://localhost:5000/ProdukType`);
-  const {token} = useContext(AuthContext)
+  const api = import.meta.env.VITE_API;
+  const { Data,refetch } = UseFecth(`${api}/ProdukType`);
+  const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormProdukType/${id}`);
   };
   const HandleDelete = async (id) => {
     if (confirm("Hapus Data ?")) {
       try {
-        axios.delete(`http://localhost:5000/ProdukType/${id}`, {
+        axios.delete(`${api}/ProdukType/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -28,6 +28,7 @@ export const ProdukType = () => {
       }
     }
   };
+  console.log(Data);
   return (
     <Layouts>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
@@ -55,31 +56,36 @@ export const ProdukType = () => {
             </tr>
           </thead>
           <tbody>
-            {Data.map((item) => (
-              <tr
-                key={item.id}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
-              >
-                <td className="flex justify-center items-center">
-                  <img src={item.gambar} alt="" className="w-10" />
-                </td>
-                <td className="text-center px-6 py-4">{item.type}</td>
-                <td className="text-center px-6 py-4 space-x-3">
-                  <button
-                    onClick={() => HandleEdit(item.id)}
-                    className="bg-green-500 text-white p-2 rounded-xl cursor-pointer"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => HandleDelete(item.id)}
-                    className="bg-red-500 text-white p-2 rounded-xl cursor-pointer"
-                  >
-                    Hapus
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {Data?.data?.length > 0 &&
+              Data.data.map((item) => (
+                <tr
+                  key={item.id}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+                >
+                  <td className="flex justify-center items-center">
+                    <img
+                      src={`http://127.0.0.1:8000/storage/${item.image}`}
+                      alt=""
+                      className="w-10"
+                    />
+                  </td>
+                  <td className="text-center px-6 py-4">{item.type.type}</td>
+                  <td className="text-center px-6 py-4 space-x-3">
+                    <button
+                      onClick={() => HandleEdit(item.id)}
+                      className="bg-green-500 text-white p-2 rounded-xl cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => HandleDelete(item.id)}
+                      className="bg-red-500 text-white p-2 rounded-xl cursor-pointer"
+                    >
+                      Hapus
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

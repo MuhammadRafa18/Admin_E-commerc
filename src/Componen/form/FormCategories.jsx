@@ -5,58 +5,45 @@ import { Link, useNavigate, useParams } from "react-router";
 import { ProdukContext } from "../../Context/ProdukProvider";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { UseFecth } from "../../hook/UseFecth";
 export const FormCategories = () => {
   const navigate = useNavigate();
-  const { ListCategories, setListCategories, Categories, setCategories } =
-    useContext(ProdukContext);
+  const { Categories, setCategories } = useContext(ProdukContext);
   const { token } = useContext(AuthContext);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/category`);
   const { id } = useParams();
+  const findData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
     if (id) {
-      axios
-        .get(`http://localhost:5000/category/${id}`, {
-          headers: {
-            Authorization: `$Bearer ${token}`,
-          },
-        })
-        .then((res) => setCategories(res.data));
+      setCategories(findData);
     }
-  }, [id]);
+  }, [id, findData]);
 
   const HandleForm = async (e) => {
     e.preventDefault();
+    try {
+      const formdata = new FormData();
+      Object.entries(Categories).forEach(([keys, value]) => {
+        formdata.append(keys, value);
+      });
 
-    const formdata = {
-      id: Date.now().toString(),
-      category: Categories.category || "",
-    };
-    if (Categories.id) {
-      await axios.put(
-        `http://localhost:5000/category/${Categories.id}`,
-        formdata,
-        {
-          headers: {
-            Authorization: `$Bearer ${token}`,
-          },
-        }
-      );
-      alert("Update sukses");
-    } else {
-      await axios.post(`http://localhost:5000/category`, formdata, {
+      if (id) formdata.append("_method", "PUT");
+
+      const url = id ? `${api}/category/${id}` : `${api}/category`;
+      await axios.post(url, formdata, {
         headers: {
           Authorization: `$Bearer ${token}`,
         },
       });
       alert("Add Data sukses");
+      navigate(`/Categories`);
+    } catch (err) {
+      console.error("Messages : ", err);
+      alert("Data Gagal disimpan");
     }
-    setCategories({
-      id: "",
-      category: "",
-    });
-
-    navigate(`/Categories`);
   };
-
+  console.log(Data)
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
@@ -65,7 +52,7 @@ export const FormCategories = () => {
           <Link to="/Categories">
             <img src={Prev} alt="" className="rotate-90 w-6 self-start mb-1" />
           </Link>
-          <h1>{Categories.id ? "Update Produk" : "Add Produk"}</h1>
+          <h1>{id ? "Update Produk" : "Add Produk"}</h1>
         </header>
 
         {/* <!-- Address Form --> */}
@@ -83,7 +70,7 @@ export const FormCategories = () => {
               id="name"
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 "
-              value={Categories.category || ""}
+              value={Categories?.category || ""}
               required
               onChange={(e) =>
                 setCategories({ ...Categories, category: e.target.value })
@@ -96,12 +83,12 @@ export const FormCategories = () => {
             <button
               type="submit"
               className={`bg-black text-white px-6 py-2 rounded-full  ${
-                Categories.id ? "w-full" : "w-1/2"
+                id ? "w-full" : "w-1/2"
               } cursor-pointer `}
             >
-              {Categories.id ? "Update" : "Save"}
+              {id ? "Update" : "Save"}
             </button>
-            {!Categories.id && (
+            {!id && (
               <button
                 onClick={() => setCategories({})}
                 type="reset"

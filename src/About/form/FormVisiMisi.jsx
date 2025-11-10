@@ -4,65 +4,46 @@ import { PagesContext } from "../../Context/PagesProvider";
 import Prev from "../../assets/panah.svg";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormVisiMisi = () => {
   const { VisiMisi, setVisiMisi } = useContext(PagesContext);
   const navigate = useNavigate();
+  const api = import.meta.env.VITE_API;
   const { id } = useParams();
   const { token } = useContext(AuthContext);
   const [Image, setImage] = useState(null);
+  const { Data } = UseFecth(`${api}/visimisi`);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/VisiMisi/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((res) => setVisiMisi(res.data));
-      } catch (err) {
-        console.error("Data gagal req :", err);
-      }
+    if (finData) {
+      setVisiMisi(finData);
     }
-  }, [id]);
+  }, [id, finData]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-    reader.readAsDataURL(file);
+    setImage(file);
   };
   const HandleForm = (e) => {
     e.preventDefault();
-    const formdata = {
-      id: VisiMisi.id || Date.now().toString(),
-      gambar: Image || VisiMisi.gambar,
-      paragraf1: VisiMisi.paragraf1 || "",
-      paragraf2: VisiMisi.paragraf2 || "",
-      paragraf3: VisiMisi.paragraf3 || "",
-      paragraf4: VisiMisi.paragraf4 || "",
-    };
-    if (VisiMisi.id) {
-      axios.put(`http://localhost:5000/VisiMisi/${VisiMisi.id}`, formdata, {
-        headers: {
-          Authorization: `Baerer ${token}`,
-        },
-      });
-    } else {
-      axios.post(`http://localhost:5000/VisiMisi`, formdata, {
-        headers: {
-          Authorization: `Baerer ${token}`,
-        },
-      });
-    }
-
+    const formdata = new FormData();
+    Object.entries(VisiMisi).forEach(([key, value]) => {
+      if(key === "image" ) return;
+      formdata.append(key, value);
+    });
+    if (Image) formdata.append("image", Image);
+    if (id) formdata.append("_method", "PUT");
+    const url = id ? `${api}/visimisi/${id}` : `${api}/visimisi`;
+    axios.post(url, formdata, {
+      headers: {
+        Authorization: `Baerer ${token}`,
+      },
+    });
+    alert("Data berhasil disimpan");
     navigate(`/VisiMisi`);
   };
-
+console.log(VisiMisi);
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
@@ -76,7 +57,7 @@ export const FormVisiMisi = () => {
         <form onSubmit={HandleForm} className="space-y-4">
           <div>
             {VisiMisi.id ? (
-              <img src={VisiMisi.gambar} className="w-10" />
+              <img src={`http://127.0.0.1:8000/storage/${VisiMisi.image}`} className="w-10" />
             ) : null}
             <label
               htmlFor="ImageProduk"
@@ -100,11 +81,11 @@ export const FormVisiMisi = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={VisiMisi.paragraf1 || ""}
+              value={VisiMisi.visimisi1 || ""}
               onChange={(e) =>
                 setVisiMisi({
                   ...VisiMisi,
-                  paragraf1: e.target.value,
+                  visimisi1: e.target.value,
                 })
               }
               required
@@ -118,11 +99,11 @@ export const FormVisiMisi = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={VisiMisi.paragraf2 || ""}
+              value={VisiMisi.visimisi2 || ""}
               onChange={(e) =>
                 setVisiMisi({
                   ...VisiMisi,
-                  paragraf2: e.target.value,
+                  visimisi2: e.target.value,
                 })
               }
               required
@@ -136,11 +117,11 @@ export const FormVisiMisi = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={VisiMisi.paragraf3 || ""}
+              value={VisiMisi.visimisi3 || ""}
               onChange={(e) =>
                 setVisiMisi({
                   ...VisiMisi,
-                  paragraf3: e.target.value,
+                  visimisi3: e.target.value,
                 })
               }
               required
@@ -154,11 +135,11 @@ export const FormVisiMisi = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={VisiMisi.paragraf4 || ""}
+              value={VisiMisi.visimisi4 || ""}
               onChange={(e) =>
                 setVisiMisi({
                   ...VisiMisi,
-                  paragraf4: e.target.value,
+                  visimisi4: e.target.value,
                 })
               }
               required
@@ -169,12 +150,12 @@ export const FormVisiMisi = () => {
             <button
               type="submit"
               className={`bg-black text-white px-6 py-2 rounded-full  ${
-                VisiMisi.id ? "w-full" : "w-1/2"
+                id ? "w-full" : "w-1/2"
               } cursor-pointer `}
             >
-              {VisiMisi.id ? "Update" : "Save"}
+              {id ? "Update" : "Save"}
             </button>
-            {!VisiMisi.id && (
+            {!id && (
               <button
                 onClick={() => setVisiMisi({})}
                 type="reset"

@@ -5,6 +5,8 @@ import axios from "axios";
 
 export const Home = () => {
   const { User } = useContext(AuthContext);
+  const api = import.meta.env.VITE_API;
+  const { token } = useContext(AuthContext);
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalCategories: 0,
@@ -19,30 +21,41 @@ export const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [products, categories, types, orders, users] = await Promise.all([
-          axios.get("http://localhost:5000/produk"),
-          axios.get("http://localhost:5000/category"),
-          axios.get("http://localhost:5000/type"),
-          axios.get("http://localhost:5000/Order"),
-          axios.get("http://localhost:5000/users"),
+        const [produk, categories, types, orders, users] = await Promise.all([
+          axios.get(`${api}/produk`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${api}/category`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${api}/type`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${api}/order`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${api}/UserAdmin`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
         ]);
 
-        const pending = orders.data.filter(
+
+        const pending = orders?.data?.data.filter(
           (o) => o.status === "Pending"
         ).length;
-        const preparing = orders.data.filter(
+        const preparing = orders?.data?.data.filter(
           (o) => o.status === "Dipersiapkan"
         ).length;
-        const shipping = orders.data.filter(
+        const shipping = orders?.data?.data.filter(
           (o) => o.status === "Dalam Pengiriman"
         ).length;
 
         setStats({
-          totalProducts: products.data.length,
-          totalCategories: categories.data.length,
-          totalTypes: types.data.length,
-          totalOrders: orders.data.length,
-          totalUsers: users.data.length,
+          totalProducts: produk?.data.data.length,
+          totalCategories: categories?.data?.data.length,
+          totalTypes: types?.data?.data.length,
+          totalOrders: orders?.data?.data.length,
+          totalUsers: users?.data?.data.length,
           pendingOrders: pending,
           preparingOrders: preparing,
           shippingOrders: shipping,
@@ -54,7 +67,9 @@ export const Home = () => {
 
     fetchData();
   }, []);
-
+  //   useEffect(() => {
+  //   console.log("Updated stats:", produk);
+  // }, [stats]);
   return (
     <Layouts>
       <div className="p-6 bg-gray-100 min-h-screen">
@@ -109,17 +124,16 @@ export const Home = () => {
             color="bg-teal-500"
           />
         </div>
-
       </div>
     </Layouts>
   );
 };
 
-  const Card = ({ title, value, color }) => (
-    <div
-      className={`p-6 rounded-xl shadow-md text-white flex flex-col justify-center items-center ${color} hover:scale-105 transition-transform`}
-    >
-      <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="text-3xl font-bold mt-2">{value}</p>
-    </div>
-  );
+const Card = ({ title, value, color }) => (
+  <div
+    className={`p-6 rounded-xl shadow-md text-white flex flex-col justify-center items-center ${color} hover:scale-105 transition-transform`}
+  >
+    <h2 className="text-lg font-semibold">{title}</h2>
+    <p className="text-3xl font-bold mt-2">{value}</p>
+  </div>
+);

@@ -22,7 +22,6 @@ export const UseFecth = (url) => {
           setData(res.data);
         } catch (err) {
           setLoading(false);
-
           console.error("Requset Data gagal", err.message);
         }
       }

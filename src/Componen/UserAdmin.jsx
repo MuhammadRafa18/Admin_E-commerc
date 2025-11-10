@@ -7,10 +7,10 @@ import { AuthContext } from "../Context/AuthContext";
 import { Layouts } from "../Layouts/Layouts";
 
 export const UserAdmin = () => {
-  const { ListUser, User, setUser, setListUser, isLogin, loading } =
-    useContext(ProdukContext);
+  const { setUser } = useContext(ProdukContext);
   const navigate = useNavigate();
-  const { Data } = UseFecth(`http://localhost:5000/users`);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/UserAdmin`);
   const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormUserAdmin/${id}`);
@@ -18,7 +18,7 @@ export const UserAdmin = () => {
   const HandleDelete = async (id) => {
     if (confirm("Hapus data ?")) {
       try {
-        await axios.delete(`http://localhost:5000/users/${id}`, {
+        await axios.delete(`${api}/UserAdmin/${id}`, {
           headers: {
             Authorization: `$Bearer ${token}`,
           },
@@ -50,9 +50,6 @@ export const UserAdmin = () => {
                 Email
               </th>
               <th scope="col" className="text-center px-6 py-3">
-                Fullname
-              </th>
-              <th scope="col" className="text-center px-6 py-3">
                 Role
               </th>
               <th scope="col" className="text-center px-6 py-3">
@@ -61,13 +58,13 @@ export const UserAdmin = () => {
             </tr>
           </thead>
           <tbody>
-            {Data.map((item) => (
+            {Data?.data?.length > 0 &&
+            Data.data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               >
                 <td className="text-center px-6 py-4">{item.email}</td>
-                <td className="text-center px-6 py-4">{item.name}</td>
                 <td className="text-center px-6 py-4">{item.role}</td>
                 <td className="text-center px-6 py-4 space-x-2">
                   <button

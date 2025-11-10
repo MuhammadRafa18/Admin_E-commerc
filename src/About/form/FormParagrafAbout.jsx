@@ -5,6 +5,7 @@ import { PagesContext } from "../../Context/PagesProvider";
 import Prev from "../../assets/panah.svg";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormParagrafAbout = () => {
   const { ParagrafAbout, setParagrafAbout } = useContext(PagesContext);
@@ -12,62 +13,44 @@ export const FormParagrafAbout = () => {
   const { id } = useParams();
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/paragrafabout`);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      axios
-        .get(`http://localhost:5000/ParagrafAbout/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => setParagrafAbout(res.data));
-      try {
-      } catch (err) {
-        console.error("Data gagal req :", err);
-      }
+    if (finData) {
+      setParagrafAbout(finData);
     }
-  }, [id]);
+  }, [id, finData]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-    reader.readAsDataURL(file);
+      setImage(file);
   };
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: ParagrafAbout.id || Date.now().toString(),
-      gambar: Image || ParagrafAbout.gambar,
-      paragraf1: ParagrafAbout.paragraf1 || "",
-      paragraf2: ParagrafAbout.paragraf2 || "",
-      paragraf3: ParagrafAbout.paragraf3 || "",
-      paragraf4: ParagrafAbout.paragraf4 || "",
-      paragraf5: ParagrafAbout.paragraf5 || "",
-    };
-    if (ParagrafAbout.id) {
-      await axios.put(
-        `http://localhost:5000/ParagrafAbout/${ParagrafAbout.id}`,
-        formdata,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    } else {
-      await axios.post(`http://localhost:5000/ParagrafAbout`, formdata, {
+    try {
+      const formdata = new FormData();
+      Object.entries(ParagrafAbout).forEach(([key, value]) => {
+        if (key === "imageabout") return;
+        formdata.append(key, value);
+      });
+
+      if (Image) formdata.append("imageabout", Image);
+      if (id) formdata.append("_method", "PUT");
+      const url = id ? `${api}/paragrafabout/${id}` : `${api}/paragrafabout`;
+      await axios.post(url, formdata, {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
+        },  
       });
+      alert("Data berhasil disimpan");
+      navigate(`/ParagrafAbout`);
+    } catch (err) {
+      console.error("messages : ", err);
+      alert("Data gagal disimpan");
     }
-
-    navigate(`/ParagrafAbout`);
   };
+  
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
@@ -76,12 +59,12 @@ export const FormParagrafAbout = () => {
           <Link to="/ParagrafAbout">
             <img src={Prev} alt="" className="rotate-90 w-6 self-start mb-1" />
           </Link>
-          <h1>{ParagrafAbout.id ? "Update Produk" : "Add Produk"}</h1>
+          <h1>{id ? "Update Produk" : "Add Produk"}</h1>
         </header>
         <form onSubmit={HandleForm} className="space-y-4">
           <div>
-            {ParagrafAbout.id ? (
-              <img src={ParagrafAbout.gambar} className="w-10" />
+            {id ? (
+              <img src={`http://127.0.0.1:8000/storage/${ParagrafAbout.imageabout}`}  className="w-10" />
             ) : null}
             <label
               htmlFor="ImageProduk"
@@ -105,11 +88,11 @@ export const FormParagrafAbout = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={ParagrafAbout.paragraf1 || ""}
+              value={ParagrafAbout.paragrafabout1 || ""}
               onChange={(e) =>
                 setParagrafAbout({
                   ...ParagrafAbout,
-                  paragraf1: e.target.value,
+                  paragrafabout1: e.target.value,
                 })
               }
               required
@@ -123,11 +106,11 @@ export const FormParagrafAbout = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={ParagrafAbout.paragraf2 || ""}
+              value={ParagrafAbout.paragrafabout2 || ""}
               onChange={(e) =>
                 setParagrafAbout({
                   ...ParagrafAbout,
-                  paragraf2: e.target.value,
+                  paragrafabout2: e.target.value,
                 })
               }
               required
@@ -141,11 +124,11 @@ export const FormParagrafAbout = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={ParagrafAbout.paragraf3 || ""}
+              value={ParagrafAbout.paragrafabout3 || ""}
               onChange={(e) =>
                 setParagrafAbout({
                   ...ParagrafAbout,
-                  paragraf3: e.target.value,
+                  paragrafabout3: e.target.value,
                 })
               }
               required
@@ -159,11 +142,11 @@ export const FormParagrafAbout = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={ParagrafAbout.paragraf4 || ""}
+              value={ParagrafAbout.paragrafabout4 || ""}
               onChange={(e) =>
                 setParagrafAbout({
                   ...ParagrafAbout,
-                  paragraf4: e.target.value,
+                  paragrafabout4: e.target.value,
                 })
               }
               required
@@ -177,11 +160,11 @@ export const FormParagrafAbout = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Paragraf"
-              value={ParagrafAbout.paragraf5 || ""}
+              value={ParagrafAbout.paragrafabout5 || ""}
               onChange={(e) =>
                 setParagrafAbout({
                   ...ParagrafAbout,
-                  paragraf5: e.target.value,
+                  paragrafabout5: e.target.value,
                 })
               }
               required
@@ -192,12 +175,12 @@ export const FormParagrafAbout = () => {
             <button
               type="submit"
               className={`bg-black text-white px-6 py-2 rounded-full  ${
-                ParagrafAbout.id ? "w-full" : "w-1/2"
+                id ? "w-full" : "w-1/2"
               } cursor-pointer `}
             >
               {ParagrafAbout.id ? "Update" : "Save"}
             </button>
-            {!ParagrafAbout.id && (
+            {!id && (
               <button
                 onClick={() => setParagrafAbout({})}
                 type="reset"

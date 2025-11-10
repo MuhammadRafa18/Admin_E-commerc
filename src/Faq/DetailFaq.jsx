@@ -8,8 +8,9 @@ import { Layouts } from '../Layouts/Layouts';
 
 export const DetailFaq = () => {
    const navigate = useNavigate();
-   const {DetailFaq,setDetailFaq} = useContext(ProdukContext)
-    const { Data } = UseFecth(`http://localhost:5000/DetailFaq`);
+   const {setDetailFaq} = useContext(ProdukContext)
+   const api = import.meta.env.VITE_API;
+    const { Data } = UseFecth(`${api}/detailfaq`);
     const { token } = useContext(AuthContext);
     const HandleEdit = (id) => {
       navigate(`/FormDetailFaq/${id}`);
@@ -17,7 +18,7 @@ export const DetailFaq = () => {
     const HandleDelete = async (id) => {
       if (confirm("Hapus data ?")) {
         try {
-          await axios.delete(`http://localhost:5000/DetailFaq/${id}`, {
+          await axios.delete(`${api}/detailfaq/${id}`, {
             headers: {
               Authorization: `$Bearer ${token}`,
             },
@@ -29,6 +30,7 @@ export const DetailFaq = () => {
         }
       }
     };
+    console.log(Data.data)
     return (
       <Layouts>
         <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
@@ -59,14 +61,15 @@ export const DetailFaq = () => {
               </tr>
             </thead>
             <tbody>
-              {Data.map((item) => (
+              {Data?.data?.length > 0 &&
+              Data.data.map((item) => (
                 <tr
                   key={item.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
                 >
-                  <td className="text-center px-6 py-4">{item.judul}</td>
-                  <td className="text-center px-6 py-4">{item.faq}</td>
-                  <td className="text-center px-6 py-4">{item.detailfaq}</td>
+                  <td className="text-center px-6 py-4">{item.faq.judul}</td>
+                  <td className="text-center px-6 py-4">{item.quest}</td>
+                  <td className="text-center px-6 py-4">{item.answer}</td>
                   <td className="text-center px-6 py-4 space-x-2">
                     <button
                       onClick={() => HandleEdit(item.id)}

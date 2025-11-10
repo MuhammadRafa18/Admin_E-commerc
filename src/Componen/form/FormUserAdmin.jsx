@@ -5,51 +5,41 @@ import dropdown from "../../assets/panah.svg";
 import { ProdukContext } from "../../Context/ProdukProvider";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormUserAdmin = () => {
-  const { User, setUser, setListUser, ListUser, isLogin, loading } =
-    useContext(ProdukContext);
+  const { User, setUser } = useContext(ProdukContext);
   const navigate = useNavigate();
   const { id } = useParams();
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/UserAdmin`);
   const { token } = useContext(AuthContext);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/users/${id}`, {
-            headers: {
-              Authorization: `$Bearer ${token}`,
-            },
-          })
-          .then((res) => setUser(res.data));
-      } catch (err) {
-        console.error("Data gagal req :", err);
-      }
+    if (finData) {
+      setUser(finData);
     }
-  }, [id]);
+  }, [id, finData]);
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: User.id || Date.now().toString() || "",
-      email: User.email || "",
-      name: User.name || "",
-      role: User.role || "",
-      password: User.password || "",
-    };
-    if (User.id) {
-      await axios.put(`http://localhost:5000/users/${User.id}`, formdata, {
-        headers: {
-          Authorization: `$Bearer ${token}`,
-        },
-      });
-    } else {
-      await axios.post(`http://localhost:5000/users`, formdata, {
-        headers: {
-          Authorization: `$Bearer ${token}`,
-        },
-      });
+    try {
+      const formdata = new FormData();
+      Object.entries(User).forEach(([keys,value]) => {
+        formdata.append(keys,value)
+      })
+      if (User.id) formdata.append("_method", "PUT");
+      const url = id ? `${api}/UserAdmin/${id}` : `${api}/UserAdmin`
+        await axios.post(url, formdata, {
+          headers: {
+            Authorization: `$Bearer ${token}`,
+          },
+        });
+      alert("Data berhasil disimpan");
+      navigate(`/UserAdmin`);
+    } catch (err) {
+      console.error("Messages :", err);
+      alert("Data gagal disimpan");
     }
-    navigate(`/UserAdmin`);
   };
 
   // console.log(ListUser);
@@ -78,22 +68,6 @@ export const FormUserAdmin = () => {
               required
             />
           </div>
-
-          {/* <!-- Fullname --> */}
-          <div>
-            <label className="block text-base  mb-1 font-medium">
-              Fullname
-            </label>
-            <input
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 text-sm"
-              placeholder="Name"
-              value={User.name || ""}
-              onChange={(e) => setUser({ ...User, name: e.target.value })}
-              required
-            />
-          </div>
-
           <div className="space-y-2 mb-4">
             <label className="text-base block">Role</label>
             <div className="relative group">

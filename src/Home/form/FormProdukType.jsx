@@ -9,65 +9,51 @@ import { UseFecth } from "../../hook/UseFecth";
 import { AuthContext } from "../../Context/AuthContext";
 
 export const FormProdukType = () => {
-  const { ProdukType, setProdukType} =
-    useContext(PagesContext);
+  const { ProdukType, setProdukType } = useContext(PagesContext);
   const [image, setimage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
-  const { Data: Type } = UseFecth(`http://localhost:5000/Type`);
-  const {token} = useContext(AuthContext)
+  const api = import.meta.env.VITE_API;
+  const { Data: Type } = UseFecth(`${api}/type`);
+  const { Data } = UseFecth(`${api}/ProdukType`);
+  const { token } = useContext(AuthContext);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/ProdukType/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((res) => setProdukType(res.data));
-      } catch (err) {
-        console.error("Data gagal req ; ", err);
-      }
+    if (finData) {
+      setProdukType({ ...finData, type_id: finData.type.id });
     }
-  }, [id]);
+  }, [id, finData]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setimage(reader.result); // hasil base64
-    };
-    reader.readAsDataURL(file);
+    setimage(file);
   };
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: ProdukType.id || Date.now().toString(),
-      gambar: image || ProdukType.gambar,
-      type: ProdukType.type || "",
-    };
-    if (ProdukType.id) {
-      await axios.put(
-        `http://localhost:5000/ProdukType/${ProdukType.id}`,
-        formdata,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    } else {
-      await axios.post(`http://localhost:5000/ProdukType`, formdata, {
+    try {
+      const formdata = new FormData();
+      Object.entries(ProdukType).forEach(([key, value]) => {
+        if(key === "image") return;
+        formdata.append(key, value);
+      });
+
+      if (image) formdata.append("image", image );
+
+      if (id) formdata.append("_method", "PUT");
+      const url = id ? `${api}/ProdukType/${id}` : `${api}/ProdukType`;
+      await axios.post(url, formdata, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      alert("data berhasil disimpan");
+      navigate(`/ProdukType`);
+    } catch (err) {
+      console.error("messages :", err);
+      alert("Data gagal disimpan");
     }
-    navigate(`/ProdukType`);
   };
-
+  console.log(ProdukType);
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
@@ -76,11 +62,14 @@ export const FormProdukType = () => {
           <Link to="/ProdukType">
             <img src={Prev} alt="" className="rotate-90 w-6 self-start mb-1" />
           </Link>
-          <h1>{ProdukType.id ? "Update Produk" : "Add Produk"}</h1>
+          <h1>{id ? "Update Produk" : "Add Produk"}</h1>
         </header>
         <form onSubmit={HandleForm} className="space-y-4">
-          {ProdukType.id ? (
-            <img src={ProdukType.gambar} className="w-10" />
+          {id ? (
+            <img
+              src={`http://127.0.0.1:8000/storage/${ProdukType.image}`}
+              className="w-10"
+            />
           ) : null}
           <div>
             <label
@@ -108,15 +97,15 @@ export const FormProdukType = () => {
               <select
                 className="w-full border  rounded-xl px-2.5 py-3 text-sm appearance-none  "
                 onChange={(e) =>
-                  setProdukType({ ...ProdukType, type: e.target.value })
+                  setProdukType({ ...ProdukType, type_id: e.target.value })
                 }
                 required
-                value={ProdukType.type || ""}
+                value={ProdukType?.type_id || ""}
               >
                 <option value="">Select Type</option>
-                {Type?.length > 0 &&
-                  Type.map((item) => (
-                    <option key={item.id} value={item.type}>
+                {Type?.data?.length > 0 &&
+                  Type.data.map((item) => (
+                    <option key={item.id} value={item.id}>
                       {item.type}
                     </option>
                   ))}
@@ -128,10 +117,10 @@ export const FormProdukType = () => {
             <button
               type="submit"
               className={`bg-black text-white px-6 py-2 rounded-full  ${
-                ProdukType.id ? "w-full" : "w-1/2"
+                id ? "w-full" : "w-1/2"
               } cursor-pointer `}
             >
-              {ProdukType.id ? "Update" : "Save"}
+              {id ? "Update" : "Save"}
             </button>
             {!ProdukType.id && (
               <button

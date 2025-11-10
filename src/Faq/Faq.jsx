@@ -7,9 +7,10 @@ import { AuthContext } from "../Context/AuthContext";
 import { Layouts } from "../Layouts/Layouts";
 
 export const Faq = () => {
-  const { Faq, setFaq, ListFaq, setListFaq } = useContext(PagesContext);
+  const { setFaq} = useContext(PagesContext);
   const navigate = useNavigate();
-  const { Data } = UseFecth(`http://localhost:5000/Faq`);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/faq`);
   const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormFaq/${id}`);
@@ -17,11 +18,12 @@ export const Faq = () => {
   const HandleDelete = async (id) => {
     if (confirm("Hapus data ?")) {
       try {
-        await axios.delete(`http://localhost:5000/Faq/${id}`, {
+        await axios.delete(`${api}/faq/${id}`, {
           headers: {
             Authorization: `$Bearer ${token}`,
           },
         });
+        alert('Data berhasil dihapus');
       } catch (err) {
         console.error("Hapu data gagal :", err);
         alert("hapus data gagal");
@@ -47,21 +49,13 @@ export const Faq = () => {
                 Judul
               </th>
               <th scope="col" className="text-center px-6 py-3">
-                quest1
-              </th>
-              <th scope="col" className="text-center px-6 py-3">
-                quest2
-              </th>
-              <th scope="col" className="text-center px-6 py-3">
-                quest3
-              </th>
-              <th scope="col" className="text-center px-6 py-3">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {Data.map((item) => (
+            {Data?.data?.length > 0 &&
+            Data.data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

@@ -4,51 +4,41 @@ import { Link, useNavigate, useParams } from "react-router";
 import Prev from "../../assets/panah.svg";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormFaq = () => {
-  const { Faq, setFaq, ListFaq, setListFaq } = useContext(PagesContext);
+  const { Faq, setFaq } = useContext(PagesContext);
   const navigate = useNavigate();
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/faq`);
   const { id } = useParams();
   const { token } = useContext(AuthContext);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/Faq/${id}`, {
-            headers: {
-              Authorization: `$Bearer ${token}`,
-            },
-          })
-          .then((res) => setFaq(res.data));
-      } catch (err) {
-        console.error("Data gagal req :", err);
-      }
+    if (finData) {
+      setFaq(finData);
     }
-  }, [id]);
+  }, [id, finData]);
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: Faq.id || Date.now().toString(),
-      judul: Faq.judul || "",
-      quest1: Faq.quest1 || "",
-      quest2: Faq.quest2 || "",
-      quest3: Faq.quest3 || "",
-    };
-    if (Faq.id) {
-      await axios.put(`http://localhost:5000/Faq/${id}`, formdata, {
+    try {
+      const formdata = new FormData();
+      Object.entries(Faq).forEach(([keys, value]) => {
+        formdata.append(keys, value);
+      });
+      if (id) formdata.append("_method", "put");
+      const url = id ? `${api}/faq/${id}` : `${api}/faq`;
+      await axios.post(url, formdata, {
         headers: {
           Authorization: `$Bearer ${token}`,
         },
       });
-    } else {
-      await axios.post(`http://localhost:5000/Faq`, formdata, {
-        headers: {
-          Authorization: `$Bearer ${token}`,
-        },
-      });
+      alert("Data berhasil disimpan");
+      navigate(`/Faq`);
+    } catch (err) {
+      console.error("Messages : ", err);
+      alert("Data gagal dihapus");
     }
-
-    navigate(`/Faq`);
   };
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
@@ -72,54 +62,6 @@ export const FormFaq = () => {
                 setFaq({
                   ...Faq,
                   judul: e.target.value,
-                })
-              }
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-base  mb-1 font-medium">Quest1</label>
-            <textarea
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 text-sm"
-              placeholder="Quest1"
-              value={Faq.quest1 || ""}
-              onChange={(e) =>
-                setFaq({
-                  ...Faq,
-                  quest1: e.target.value,
-                })
-              }
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-base  mb-1 font-medium">Quest2</label>
-            <textarea
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 text-sm"
-              placeholder="Quest1"
-              value={Faq.quest2 || ""}
-              onChange={(e) =>
-                setFaq({
-                  ...Faq,
-                  quest2: e.target.value,
-                })
-              }
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-base  mb-1 font-medium">Quest3</label>
-            <textarea
-              type="text"
-              className="w-full border rounded-xl px-2.5 py-3 text-sm"
-              placeholder="Quest1"
-              value={Faq.quest3 || ""}
-              onChange={(e) =>
-                setFaq({
-                  ...Faq,
-                  quest3: e.target.value,
                 })
               }
               required

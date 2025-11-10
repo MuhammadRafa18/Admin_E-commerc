@@ -15,15 +15,16 @@ export const Login = () => {
         password:account.password
     };
     try{
-      const res =  await axios.post(`http://localhost:5000/login`, formuser)
-      login(res.data.accessToken, res.data.user);
+      const res =  await axios.post(`http://127.0.0.1:8000/api/loginAdmin`, formuser)
+      login(res.data.token, res.data.user);
+      // console.log(res.data)
       navigate("/");
     }catch (err){
        alert("Email atau password salah");
     }
   
  }
-
+console.log(account)
  
  
 

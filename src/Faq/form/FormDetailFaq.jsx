@@ -11,87 +11,37 @@ export const FormDetailFaq = () => {
   const navigate = useNavigate();
   const { DetailFaq, setDetailFaq } = useContext(ProdukContext);
   const [SelectFaq, setSelectFaq] = useState();
-  const { Data: Faq } = UseFecth(`http://localhost:5000/Faq`);
-
+  const api = import.meta.env.VITE_API;
+  const { Data: Faq } = UseFecth(`${api}/faq`);
+  const { Data } = UseFecth(`${api}/detailfaq`);
   const { id } = useParams();
   const { token } = useContext(AuthContext);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      axios
-        .get(`http://localhost:5000/DetailFaq/${id}`, {
-          headers: {
-            Authorization: `$Bearer ${token}`,
-          },
-        })
-        .then(async (res) => {
-          setDetailFaq(res.data);
-          if (res.data.judul) {
-            const FaqRes = await axios.get(
-              `http://localhost:5000/Faq?judul=${res.data.judul}`
-            );
-            if(FaqRes.data.length > 0){
-                setSelectFaq(FaqRes.data[0])
-            }
-          }
-        });
+    if (finData) {
+      setDetailFaq({
+        ...finData,
+        faq_id: finData?.faq?.id
+      });
     }
-  }, [id]);
-
-  const HandleChange = async (e) => {
-    const SelectedJudul = e.target.value;
-    setDetailFaq({
-      ...DetailFaq,
-      judul: SelectedJudul,
-      faq: "",
-      detailfaq: "",
-    });
-    if (SelectedJudul) {
-      try {
-        const res = await axios.get(
-          `http://localhost:5000/Faq?judul=${SelectedJudul}`
-        );
-        if (res.data.length > 0) {
-          setSelectFaq(res.data[0]);
-        } else {
-          setSelectFaq(null);
-        }
-      } catch (err) {
-        console.error("Gagal data req :", err);
-      }
-    }
-  };
+  }, [id, finData]);
 
   const HandleForm = async (e) => {
     e.preventDefault();
     try {
-      const formdata = {
-        id: DetailFaq.id || Date.now().toString(), // auto id kalau belum ada
-        judul: DetailFaq.judul || "",
-        faq: DetailFaq.faq || "",
-        detailfaq: DetailFaq.detailfaq || "",
-      };
+      const formdata = new FormData();
+      Object.entries(DetailFaq).forEach(([key,value]) => {
+        formdata.append(key,value);
+      })
 
-      if (DetailFaq.id) {
-        // UPDATE
-        await axios.put(
-          `http://localhost:5000/DetailFaq/${DetailFaq.id}`,
-          formdata,
-          {
-            headers: {
-              Authorization: `$Bearer ${token}`,
-            },
-          }
-        );
-        alert("Produk berhasil diupdate ");
-      } else {
-        // CREATE
-        await axios.post("http://localhost:5000/DetailFaq", formdata, {
-          headers: {
-            Authorization: `$Bearer ${token}`,
-          },
-        });
-        alert("Produk berhasil ditambahkan ");
-      }
+      if (id) formdata.append("_method", "put");
+      const url = id ? `${api}/detailfaq/${id}` : `${api}/detailfaq`;
+      await axios.post(url, formdata, {
+        headers: {
+          Authorization: `$Bearer ${token}`,
+        },
+      });
+      alert("Produk berhasil ditambahkan ");
       navigate("/DetailFaq");
     } catch (err) {
       console.error("Error saat create/update produk:", err);
@@ -123,48 +73,39 @@ export const FormDetailFaq = () => {
               />
               <select
                 className="w-full border  rounded-xl px-2.5 py-3 text-sm appearance-none  "
-                onChange={HandleChange}
-                value={DetailFaq.judul || ""}
+                onChange={(e) =>
+                  setDetailFaq({ ...DetailFaq, faq_id: e.target.value })
+                }
+                value={DetailFaq.faq_id || ""}
                 required
               >
                 <option value="">Pilih Judul</option>
-                {Faq?.length > 0 &&
-                  Faq.map((item) => (
-                    <option key={item.id} value={item.judul}>
+                {Faq?.data?.length > 0 &&
+                  Faq.data.map((item) => (
+                    <option key={item.id} value={item.id}>
                       {item.judul}
                     </option>
                   ))}
               </select>
             </div>
           </div>
-          <div className="space-y-2 mb-4">
-            <label className="text-base block">Faq</label>
-            <div className="relative group">
-              <img
-                src={dropdown}
-                alt=""
-                className="absolute right-3 bottom-4  "
-              />
-              <select
-                className="w-full border  rounded-xl px-2.5 py-3 text-sm appearance-none  "
-                onChange={(e) =>
-                  setDetailFaq({ ...DetailFaq, faq: e.target.value })
-                }
-                value={DetailFaq.faq || ""}
-                required
-                disabled={!SelectFaq}
-              >
-                <option value="">Pilih Faq</option>
-                {SelectFaq &&
-                  [SelectFaq.quest1, SelectFaq.quest2, SelectFaq.quest3]
-                    .filter(Boolean)
-                    .map((item, index) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    ))}
-              </select>
-            </div>
+          <div>
+            <label
+              htmlFor="size"
+              className="block font-medium mb-1 text-base cursor-pointer"
+            >
+              Quest
+            </label>
+            <input
+              id="size"
+              type="text"
+              className="w-full border rounded-xl px-2.5 py-3 "
+              onChange={(e) =>
+                setDetailFaq({ ...DetailFaq, quest: e.target.value })
+              }
+              value={DetailFaq.quest || ""}
+              required
+            />
           </div>
           <div>
             <label
@@ -178,9 +119,9 @@ export const FormDetailFaq = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 "
               onChange={(e) =>
-                setDetailFaq({ ...DetailFaq, detailfaq: e.target.value })
+                setDetailFaq({ ...DetailFaq, answer: e.target.value })
               }
-              value={DetailFaq.detailfaq || ""}
+              value={DetailFaq.answer || ""}
               required
             />
           </div>

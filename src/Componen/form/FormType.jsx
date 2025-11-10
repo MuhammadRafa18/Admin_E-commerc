@@ -5,55 +5,45 @@ import { Link, useNavigate, useParams } from "react-router";
 import { ProdukContext } from "../../Context/ProdukProvider";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormType = () => {
   const navigate = useNavigate();
-  const { Type, setType, ListType, setListType } = useContext(ProdukContext);
+  const { Type, setType } = useContext(ProdukContext);
   const { id } = useParams();
   const { token } = useContext(AuthContext);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/type`);
+  const findData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
     if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/type/${id}`, {
-            headers: {
-              Authorization: `$Bearer ${token}`,
-            },
-          })
-          .then((res) => setType(res.data));
-      } catch {
-        console.error("Get data error :", err);
-      }
+      setType(findData);
     }
-  }, [id]);
+  }, [id,findData]);
 
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: Type.id || Date.now().toString(),
-      type: Type.type,
-    };
+    try {
+      const formdata = new FormData();
+      Object.entries(Type).forEach(([keys, value]) => {
+        formdata.append(keys, value);
+      });
 
-    if (Type.id) {
-      await axios.put(`http://localhost:5000/type/${Type.id}`, formdata, {
+      if (Type.id) formdata.append("_method", "PUT");
+      const url = id ? ` ${api}/type/${id}` : `${api}/type`;
+      await axios.post(url, formdata, {
         headers: {
           Authorization: `$Bearer ${token}`,
         },
       });
-    } else {
-      await axios.post(`http://localhost:5000/type`, formdata, {
-        headers: {
-          Authorization: `$Bearer ${token}`,
-        },
-      });
+      alert("Type berhasil disimpan ");
+      navigate(`/Type`);
+    } catch (err) {
+      console.error("Error saat create/update produk:", err);
+      alert("Gagal menyimpan produk ");
     }
-    setType({
-      id: "",
-      type: "",
-    });
-    navigate(`/Type`);
   };
-  // console.log(ListType)
+  console.log(Type);
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
@@ -62,7 +52,7 @@ export const FormType = () => {
           <Link to="/Type">
             <img src={Prev} alt="" className="rotate-90 w-6 self-start mb-1" />
           </Link>
-          <h1>{Type.id ? "Update Produk" : "Add Produk"}</h1>
+          <h1>{id ? "Update Produk" : "Add Produk"}</h1>
         </header>
         <form onSubmit={HandleForm} className="space-y-4">
           <div>
@@ -76,7 +66,7 @@ export const FormType = () => {
               id="name"
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 "
-              value={Type.type || ""}
+              value={Type?.type || ""}
               required
               onChange={(e) => setType({ ...Type, type: e.target.value })}
             />
@@ -87,12 +77,12 @@ export const FormType = () => {
             <button
               type="submit"
               className={`bg-black text-white px-6 py-2 rounded-full  ${
-                Type.id ? "w-full" : "w-1/2"
+                id ? "w-full" : "w-1/2"
               } cursor-pointer `}
             >
-              {Type.id ? "Update" : "Save"}
+              {id ? "Update" : "Save"}
             </button>
-            {!Type.id && (
+            {!id && (
               <button
                 onClick={() => setType({})}
                 type="reset"

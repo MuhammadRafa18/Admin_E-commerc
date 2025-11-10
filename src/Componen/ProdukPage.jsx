@@ -7,30 +7,31 @@ import { AuthContext } from "../Context/AuthContext";
 import { Layouts } from "../Layouts/Layouts";
 
 export const ProdukPage = () => {
-  const { ListProduk, setListProduk, setProduk } = useContext(ProdukContext);
+  const { setProduk } = useContext(ProdukContext);
   const navigate = useNavigate();
-  const url = `http://localhost:5000/produk`;
-  const { Data } = UseFecth(url);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/produk`);
   const { token } = useContext(AuthContext);
   const HandleUpdate = (id) => {
-    navigate(`/FormProduk/${id}`);
+    navigate(`/FormProduk/${id}`);  
   };
 
   const HandleDelete = async (id) => {
     if (confirm("Hapus Data?")) {
       try {
-        await axios.delete(`http://localhost:5000/produk/${id}`, {
+        await axios.delete(`${api}/produk/${id}`, {
           headers: {
             Authorization: `$Bearer ${token}`,
           },
         });
-      } catch {
+        alert("Data Berhasil Dihapus");
+      } catch (err) {
         console.error("Gagal hapus produk:", err);
         alert("Gagal hapus produk ❌");
       }
     }
   };
-  console.log(Data);
+  // console.log(Data.data);
   return (
     <Layouts>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
@@ -63,10 +64,7 @@ export const ProdukPage = () => {
                 Category
               </th>
               <th scope="col" className="text-center px-6 py-3">
-                type
-              </th>
-              <th scope="col" className="text-center px-6 py-3">
-                Type Produk
+                Skin type
               </th>
               <th scope="col" className="text-center px-6 py-3">
                 price
@@ -95,8 +93,8 @@ export const ProdukPage = () => {
             </tr>
           </thead>
           <tbody>
-            {Data?.length > 0 &&
-              Data.map((item,index) => (
+            {Data?.data?.length > 0 &&
+              Data.data.map((item,index) => (
                 <tr
                   key={item.id}
                   className=" bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
@@ -105,15 +103,14 @@ export const ProdukPage = () => {
                   {index + 1}
                 </td>
                   <td  className="px-6 py-4 text-center">
-                    <img src={item.imageproduk} alt="" className="w-10 mx-auto" />
+                    <img src={`http://localhost:8000/storage/${item.imageproduk}`} alt="" className="w-10 mx-auto" />
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <img src={item.imagebanner} alt="" className="w-10 mx-auto" />
+                    <img src={`http://localhost:8000/storage/${item.imagebanner}`} alt="" className="w-10 mx-auto" />
                   </td>
                   <td className="text-center px-6 py-4">{item.title}</td>
-                  <td className="text-center px-6 py-4">{item.category}</td>
-                  <td className="text-center px-6 py-4">{item.type}</td>
-                  <td className="text-center px-6 py-4">{item.typeProduk}</td>
+                  <td className="text-center px-6 py-4">{item.category.category}</td>
+                  <td className="text-center px-6 py-4">{item.type.type}</td>
                   <td className="text-center px-6 py-4">{item.price}</td>
                   <td className="text-center px-6 py-4">{item.size}</td>
                   <td className="text-center px-6 py-4">{item.rating}</td>

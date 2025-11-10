@@ -1,107 +1,71 @@
 import React, { useContext, useEffect, useState } from "react";
 import Prev from "../../assets/panah.svg";
 import dropdown from "../../assets/panah.svg";
-import { data, Link, useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { ProdukContext } from "../../Context/ProdukProvider";
 import axios from "axios";
 import { UseFecth } from "../../hook/UseFecth";
 import { AuthContext } from "../../Context/AuthContext";
 
 export const FormProduk = () => {
-  const { ListProduk, setListProduk, Produk, setProduk } =
-    useContext(ProdukContext);
+  const { Produk, setProduk } = useContext(ProdukContext);
+  const api = import.meta.env.VITE_API;
   const navigate = useNavigate();
-  const { Data: category } = UseFecth(`http://localhost:5000/category`);
-  const { Data: type } = UseFecth(`http://localhost:5000/type`);
+  const { Data: category } = UseFecth(`${api}/category`);
+  const { Data: dataProduk } = UseFecth(`${api}/produk`);
+  const { Data: type } = UseFecth(`${api}/type`);
   const [imageproduk, setimageproduk] = useState(null);
   const [imagebanner, setimagebanner] = useState(null);
-  const [image, setimage] = useState(null);
   const { id } = useParams();
   const { token } = useContext(AuthContext);
+  const findData = dataProduk?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      axios
-        .get(`http://localhost:5000/produk/${id}`, {
-          headers: {
-            Authorization: `$Bearer ${token}`,
-          },
-        })
-        .then((res) => setProduk(res.data));
+    if (findData) {
+      setProduk({
+        ...findData,
+        type_id: findData?.type?.id,
+        category_id: findData?.category?.id,
+      });
     }
-  }, [id]);
+  }, [id,findData]);
 
   const handleFileChange = (e, type) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (type === "Banner") {
-        setimagebanner(reader.result); // hasil base64
-      } else if (type === "Produk") {
-        setimageproduk(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
+    if (type === "Produk") {
+      setimageproduk(file);
+    } else if (type === "Banner") {
+      setimagebanner(file);
+    }
   };
 
   const HandleForm = async (e) => {
     e.preventDefault();
     try {
-      //  const formData = new FormData();
-      // formData.append("id", Produk.id || Date.now())
-      // formData.append("gambar",  image || Produk.gambar || item.gambar,)
-      // formData.append("name", Produk.name || "");
-      // formData.append("type", Produk.type || "");
-      // formData.append("category", Produk.category || "");
-      // formData.append("price", Produk.price || 0);
-      // formData.append("size", Produk.size || "");
-      // formData.append("rating", Produk.rating || 0);
-      // formData.append("stok", Produk.stok || 0);
-      const formdata = {
-        id: Produk.id || Date.now().toString(), // auto id kalau belum ada
-        imageproduk: imageproduk || Produk.imageproduk || "", // bisa base64 atau link
-        imagebanner: imagebanner || Produk.imagebanner || "", // bisa base64 atau link
-        title: Produk.title || "",
-        type: Produk.type || "",
-        category: Produk.category || "",
-        cart: false || true,
-        favorite: false || true,
-        price: Produk.price || 0,
-        size: Produk.size || "",
-        rating: Produk.rating || 0,
-        stok: Produk.stok || 0,
-        typeProduk: Produk.typeProduk || "",
-        description:Produk.description || "",
-        useproduk:Produk.useproduk || "",
-        ingredient:Produk.ingredient || ""
-      };
+      const formData = new FormData();
+      Object.entries(Produk).forEach(([key, value]) => {
+        if (key === "imageproduk" || key === "imagebanner") return;
+        formData.append(key, value);
+      });
+      if (imageproduk) formData.append("imageproduk", imageproduk);
+      if (imagebanner) formData.append("imagebanner", imagebanner);
+      if (id) formData.append("_method", "PUT");
 
-      if (Produk.id) {
-        // UPDATE
-        await axios.put(`http://localhost:5000/produk/${Produk.id}`, formdata, {
-          headers: {
-            Authorization: `$Bearer ${token}`,
-          },
-        });
-        alert("Produk berhasil diupdate ");
-      } else {
-        // CREATE
-        await axios.post("http://localhost:5000/produk", formdata, {
-          headers: {
-            Authorization: `$Bearer ${token}`,
-          },
-        });
-        alert("Produk berhasil ditambahkan ");
-      }
-      setimage(null);
+      const url = id ? `${api}/produk/${id}` : `${api}/produk`;
+      await axios.post(url, formData, {
+        headers: {
+          Authorization: `$Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      alert("Produk berhasil disimpan ");
       navigate("/ProdukPage");
     } catch (err) {
       console.error("Error saat create/update produk:", err);
       alert("Gagal menyimpan produk ");
     }
   };
-  // console.log(Produk)
+  console.log(findData);
 
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
@@ -120,7 +84,10 @@ export const FormProduk = () => {
           <div className="flex items-center space-x-3">
             <div className="w-1/2">
               {Produk.id ? (
-                <img src={Produk.imageproduk} className="w-10" />
+                <img
+                  src={`http://127.0.0.1:8000/storage/${Produk.imageproduk}`}
+                  className="w-10"
+                />
               ) : null}
               <label
                 htmlFor="ImageProduk"
@@ -138,7 +105,10 @@ export const FormProduk = () => {
             </div>
             <div className="w-1/2">
               {Produk.id ? (
-                <img src={Produk.imagebanner} className="w-10" />
+                <img
+                  src={`http://127.0.0.1:8000/storage/${Produk.imagebanner}`}
+                  className="w-10"
+                />
               ) : null}
               <label
                 htmlFor="ImageBanner"
@@ -186,15 +156,15 @@ export const FormProduk = () => {
                 <select
                   className="w-full border  rounded-xl px-2.5 py-3.5 text-sm appearance-none  "
                   onChange={(e) =>
-                    setProduk({ ...Produk, type: e.target.value })
+                    setProduk({ ...Produk, type_id: e.target.value })
                   }
-                  value={Produk.type || ""}
+                  value={Produk?.type_id || ""}
                   required
                 >
                   <option value="">Pilih Type</option>
-                  {type?.length > 0 &&
-                    type.map((item) => (
-                      <option key={item.id} value={item.type}>
+                  {type?.data?.length > 0 &&
+                    type.data.map((item) => (
+                      <option key={item.id} value={item.id}>
                         {item.type}
                       </option>
                     ))}
@@ -214,15 +184,15 @@ export const FormProduk = () => {
                 <select
                   className="w-full border  rounded-xl px-2.5 py-3.5 text-sm appearance-none  "
                   onChange={(e) =>
-                    setProduk({ ...Produk, category: e.target.value })
+                    setProduk({ ...Produk, category_id: e.target.value })
                   }
-                  value={Produk.category || ""}
+                  value={Produk?.category_id || ""}
                   required
                 >
                   <option value="">Pilih Category</option>
-                  {category?.length > 0 &&
-                    category.map((item) => (
-                      <option key={item.id} value={item.category}>
+                  {category?.data?.length > 0 &&
+                    category.data.map((item) => (
+                      <option key={item.id} value={item.id}>
                         {item.category}
                       </option>
                     ))}
@@ -284,101 +254,76 @@ export const FormProduk = () => {
               />
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-1/2 space-y-2 ">
-              <label className="text-base block">Type Produk</label>
-              <div className="relative group">
-                <img
-                  src={dropdown}
-                  alt=""
-                  className="absolute right-3 bottom-4  "
-                />
-                <select
-                  className="w-full border  rounded-xl px-2.5 py-3.5 text-sm appearance-none  "
-                  onChange={(e) =>
-                    setProduk({ ...Produk, typeProduk: e.target.value })
-                  }
-                  value={Produk.typeProduk || ""}
-                  required
-                >
-                  <option value="">Pilih Type Produk</option>
-                    <option  value="Bestseller">Bestseller</option>
-                    <option  value="New Product">New Product</option>
-                    <option  value="Normal Product">Normal Product</option>
-                </select>
-              </div>
-            </div>
-            <div className="w-1/2">
-              <label
-                htmlFor="stok"
-                className="block font-medium mb-1 text-base cursor-pointer"
-              >
-                Stok
-              </label>
-              <input
-                id="stok"
-                type="text"
-                className="w-full border rounded-xl px-2.5 py-3 "
-                onChange={(e) => setProduk({ ...Produk, stok: e.target.value })}
-                required
-                value={Produk.stok || ""}
-              />
-            </div>
+          <div className="">
+            <label
+              htmlFor="stok"
+              className="block font-medium mb-1 text-base cursor-pointer"
+            >
+              Stok
+            </label>
+            <input
+              id="stok"
+              type="text"
+              className="w-full border rounded-xl px-2.5 py-3 "
+              onChange={(e) => setProduk({ ...Produk, stok: e.target.value })}
+              required
+              value={Produk.stok || ""}
+            />
           </div>
-            <div>
-              <label
-                htmlFor="name"
-                className="block font-medium mb-1 text-base cursor-pointer"
-              >
-                Deskripsi
-              </label>
-              <textarea
-                id="name"
-                placeholder="Name Produk"
-                className="w-full border rounded-xl px-2.5 py-3 "
-                value={Produk.description || ""}
-                required
-                onChange={(e) =>
-                  setProduk({ ...Produk, description: e.target.value })
-                }
-              />
-            </div>
-             <div>
-              <label
-                htmlFor="name"
-                className="block font-medium mb-1 text-base cursor-pointer"
-              >
-                How To Use
-              </label>
-              <textarea
-                id="name"
-                placeholder="Name Produk"
-                className="w-full border rounded-xl px-2.5 py-3 "
-                value={Produk.useproduk || ""}
-                required
-                onChange={(e) =>
-                  setProduk({ ...Produk, useproduk: e.target.value })
-                }
-              />
-            </div>
-             <div>
-              <label
-                htmlFor="name"
-                className="block font-medium mb-1 text-base cursor-pointer"
-              >
-                Ingredient
-              </label>
-              <textarea
-                id="name"
-                placeholder="Name Produk"
-                className="w-full border rounded-xl px-2.5 py-3 "
-                value={Produk.ingredient || ""}
-                required
-                onChange={(e) =>
-                  setProduk({ ...Produk, ingredient: e.target.value })
-                }
-              />
-            </div>
+          <div>
+            <label
+              htmlFor="name"
+              className="block font-medium mb-1 text-base cursor-pointer"
+            >
+              Deskripsi
+            </label>
+            <textarea
+              id="name"
+              placeholder="Name Produk"
+              className="w-full border rounded-xl px-2.5 py-3 "
+              value={Produk.description || ""}
+              required
+              onChange={(e) =>
+                setProduk({ ...Produk, description: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="name"
+              className="block font-medium mb-1 text-base cursor-pointer"
+            >
+              How To Use
+            </label>
+            <textarea
+              id="name"
+              placeholder="Name Produk"
+              className="w-full border rounded-xl px-2.5 py-3 "
+              value={Produk.useproduk || ""}
+              required
+              onChange={(e) =>
+                setProduk({ ...Produk, useproduk: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="name"
+              className="block font-medium mb-1 text-base cursor-pointer"
+            >
+              Ingredient
+            </label>
+            <textarea
+              id="name"
+              placeholder="Name Produk"
+              className="w-full border rounded-xl px-2.5 py-3 "
+              value={Produk.ingredient || ""}
+              required
+              onChange={(e) =>
+                setProduk({ ...Produk, ingredient: e.target.value })
+              }
+            />
+          </div>
 
           {/* <!-- Buttons --> */}
           <div className="w-full flex space-x-3 mt-6">

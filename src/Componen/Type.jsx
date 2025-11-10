@@ -7,17 +7,17 @@ import { AuthContext } from "../Context/AuthContext";
 import { Layouts } from "../Layouts/Layouts";
 
 export const Type = () => {
-  const { Type, setType, ListType, setListType } = useContext(ProdukContext);
+  const { setType } = useContext(ProdukContext);
   const navigate = useNavigate();
-  const url = `http://localhost:5000/type`;
-  const { Data } = UseFecth(url);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/type`);
   const { token } = useContext(AuthContext);
   const HandleEdit = (id) => {
     navigate(`/FormType/${id}`);
   };
   const HandleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/type/${id}`, {
+      await axios.delete(`${api}/type/${id}`, {
         headers: {
           Authorization: `$Bearer ${token}`,
         },
@@ -28,7 +28,7 @@ export const Type = () => {
       alert("Data gagal dihapus");
     }
   };
-  // console.log(ListType)
+  console.log(Data.data)
   return (
     <Layouts>
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
@@ -53,7 +53,8 @@ export const Type = () => {
             </tr>
           </thead>
           <tbody>
-            {Data.map((item) => (
+            {Data?.data?.length > 0 &&
+            Data.data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"

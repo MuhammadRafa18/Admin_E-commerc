@@ -1,62 +1,49 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router';
-import { AuthContext } from '../../Context/AuthContext';
-import axios from 'axios';
-import Prev from"../../assets/panah.svg";
-import { PagesContext } from '../../Context/PagesProvider';
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router";
+import { AuthContext } from "../../Context/AuthContext";
+import axios from "axios";
+import Prev from "../../assets/panah.svg";
+import { PagesContext } from "../../Context/PagesProvider";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormResult = () => {
- const {Result,setResult} = useContext(PagesContext);
- const [image, setimage] = useState(null);
+  const { Result, setResult } = useContext(PagesContext);
+  const [image, setimage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
   const { token } = useContext(AuthContext);
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/result`);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
 
   useEffect(() => {
-    if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/result/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((res) => setResult(res.data));
-      } catch (err) {
-        console.error("Data gagal req ; ", err);
-      }
+    if (finData) {
+      setResult(finData);
     }
-  }, [id]);
+  }, [id, finData]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setimage(reader.result); // hasil base64
-    };
-    reader.readAsDataURL(file);
+    setimage(file);
   };
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: Result.id || Date.now().toString(),
-      result: image || Result.result,
-    };
-    if (Result.id) {
-      await axios.put(`http://localhost:5000/result/${Result.id}`, formdata, {
+    try {
+      const formdata = new FormData();
+      if (image) formdata.append("result", image || null);
+      if (Result.id) formdata.append("_method", "PUT");
+      const url = id ? `${api}/result/${id}` : `${api}/result`;
+      await axios.post(url, formdata, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-    } else {
-      await axios.post(`http://localhost:5000/result`, formdata, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      alert("Data berhasil disimpan");
+      navigate(`/result`);
+    } catch (err) {
+      console.error("messages :", err);
+      alert("Data gagal disimpan");
     }
-    navigate(`/result`);
   };
 
   return (
@@ -67,10 +54,15 @@ export const FormResult = () => {
           <Link to="/Result">
             <img src={Prev} alt="" className="rotate-90 w-6 self-start mb-1" />
           </Link>
-          <h1>{Result.id ? "Update Produk" : "Add Produk"}</h1>
+          <h1>{id ? "Update Produk" : "Add Produk"}</h1>
         </header>
         <form onSubmit={HandleForm} className="space-y-4">
-          {Result.id ? <img src={Result.result} className="w-10" /> : null}
+          {id ? (
+            <img
+              src={`http://127.0.0.1:8000/storage/${Result.result}`}
+              className="w-10"
+            />
+          ) : null}
           <div>
             <label
               htmlFor="gambar"
@@ -91,12 +83,12 @@ export const FormResult = () => {
             <button
               type="submit"
               className={`bg-black text-white px-6 py-2 rounded-full  ${
-                Result.id ? "w-full" : "w-1/2"
+                id ? "w-full" : "w-1/2"
               } cursor-pointer `}
             >
-              {Result.id ? "Update" : "Save"}
+              {id ? "Update" : "Save"}
             </button>
-            {!Result.id && (
+            {!id && (
               <button
                 onClick={() => setResult({})}
                 type="reset"
@@ -110,4 +102,4 @@ export const FormResult = () => {
       </main>
     </div>
   );
-}
+};

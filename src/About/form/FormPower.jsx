@@ -5,60 +5,50 @@ import Prev from "../../assets/panah.svg";
 import dropdown from "../../assets/panah.svg";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormPower = () => {
-  const { ListPower, setListPower, Power, setPower } = useContext(PagesContext);
+  const { Power, setPower } = useContext(PagesContext);
   const [image, setimage] = useState(null);
   const navigate = useNavigate();
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/power`);
   const { id } = useParams();
   const { token } = useContext(AuthContext);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
   useEffect(() => {
-    if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/Power/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((res) => setPower(res.data));
-      } catch (err) {
-        console.error("Data Gagal req :", err);
-      }
+    if (finData) {
+      setPower(finData);
     }
-  }, [id]);
+  }, [id, finData]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setimage(reader.result); // hasil base64
-    };
-    reader.readAsDataURL(file);
+    setimage(file);
   };
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: Power.id || Date.now().toString(),
-      icon: image || Power.icon,
-      benefit: Power.benefit || "",
-    };
-    if (Power.id) {
-      await axios.put(`http://localhost:5000/Power/${Power.id}`, formdata, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const formdata = new FormData();
+      Object.entries(Power).forEach(([keys, value]) => {
+        if (keys === "icon") return;
+        formdata.append(keys, value);
       });
-    } else {
-      await axios.post(`http://localhost:5000/Power`, formdata, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
 
-    navigate(`/Power`);
+      if (image) formdata.append("icon", image);
+      if (id) formdata.append("_method", "put");
+      const url = id ? `${api}/power/${id}` : `${api}/power`;
+      await axios.post(url, formdata, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("Data berhasil disimpan");
+      navigate(`/Power`);
+    } catch (err) {
+      console.error("messages : ", err);
+      alert("Data gagal disimpan");
+    }
   };
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
@@ -71,7 +61,7 @@ export const FormPower = () => {
           <h1>{Power.id ? "Update Produk" : "Add Produk"}</h1>
         </header>
         <form onSubmit={HandleForm} className="space-y-4">
-          {Power.id ? <img src={Power.icon} className="w-10" /> : null}
+          {id ? <img src={`http://127.0.0.1:8000/storage/${Power.icon}`} className="w-10" /> : null}
           <div>
             <label
               htmlFor="gambar"
@@ -93,8 +83,8 @@ export const FormPower = () => {
               type="text"
               className="w-full border rounded-xl px-2.5 py-3 text-sm"
               placeholder="Name"
-              value={Power.benefit || ""}
-              onChange={(e) => setPower({ ...Power, benefit: e.target.value })}
+              value={Power.power || ""}
+              onChange={(e) => setPower({ ...Power, power: e.target.value })}
               required
             />
           </div>

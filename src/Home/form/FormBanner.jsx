@@ -1,64 +1,52 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PagesContext } from "../../Context/PagesProvider";
-import Prev from"../../assets/panah.svg";
+import Prev from "../../assets/panah.svg";
 import { AuthContext } from "../../Context/AuthContext";
 import { Link, useNavigate, useParams } from "react-router";
 import axios from "axios";
+import { UseFecth } from "../../hook/UseFecth";
 
 export const FormBanner = () => {
   const { Banner, setBanner } = useContext(PagesContext);
   const [image, setimage] = useState(null);
   const navigate = useNavigate();
+  const api = import.meta.env.VITE_API;
+  const { Data } = UseFecth(`${api}/banner`);
   const { id } = useParams();
   const { token } = useContext(AuthContext);
+  const finData = Data?.data?.find((item) => item.id === Number(id));
 
   useEffect(() => {
-    if (id) {
-      try {
-        axios
-          .get(`http://localhost:5000/Banner/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((res) => setBanner(res.data));
-      } catch (err) {
-        console.error("Data gagal req ; ", err);
-      }
+    if (finData) {
+      setBanner(finData);
     }
-  }, [id]);
+  }, [id, finData]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setimage(reader.result); // hasil base64
-    };
-    reader.readAsDataURL(file);
+    setimage(file);
   };
   const HandleForm = async (e) => {
     e.preventDefault();
-    const formdata = {
-      id: Banner.id || Date.now().toString(),
-      gambar: image || Banner.gambar,
-    };
-    if (Banner.id) {
-      await axios.put(`http://localhost:5000/Banner/${Banner.id}`, formdata, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } else {
-      await axios.post(`http://localhost:5000/Banner`, formdata, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
+    try{
+    const formdata = new FormData();
+    if (image) formdata.append("banner", image || null);
+    if (Banner.id) formdata.append("_method", "PUT");
+    const url = id ? `${api}/banner/${id}` : `${api}/banner`;
+    await axios.post(url, formdata, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    alert("Data sukses disimpan");
     navigate(`/Banner`);
+  }catch (err){
+    console.error("messages : ", err);
+    alert("Data gagal disimpan");
+  }
   };
-
+  console.log(Banner);
   return (
     <div className="bg-gray-secondbackground text-black font-sans flex justify-center p-10">
       <main className="bg-white  w-1/2 shadow rounded-xl p-10 space-y-6">
@@ -67,10 +55,15 @@ export const FormBanner = () => {
           <Link to="/Banner">
             <img src={Prev} alt="" className="rotate-90 w-6 self-start mb-1" />
           </Link>
-          <h1>{Banner.id ? "Update Produk" : "Add Produk"}</h1>
+          <h1>{id ? "Update Produk" : "Add Produk"}</h1>
         </header>
         <form onSubmit={HandleForm} className="space-y-4">
-          {Banner.id ? <img src={Banner.gambar} className="w-10" /> : null}
+          {id ? (
+            <img
+              src={`http://127.0.0.1:8000/storage/${Banner.banner}`}
+              className="w-10"
+            />
+          ) : null}
           <div>
             <label
               htmlFor="gambar"
@@ -94,9 +87,9 @@ export const FormBanner = () => {
                 Banner.id ? "w-full" : "w-1/2"
               } cursor-pointer `}
             >
-              {Banner.id ? "Update" : "Save"}
+              {id ? "Update" : "Save"}
             </button>
-            {!Banner.id && (
+            {!id && (
               <button
                 onClick={() => setBanner({})}
                 type="reset"

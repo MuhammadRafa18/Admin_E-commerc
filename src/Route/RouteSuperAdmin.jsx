@@ -13,5 +13,5 @@ export const RouteSuperAdmin = ({children}) => {
         return <Navigate to="/"/>
     }
 
-    return children ;
+    return  children ;
 }
