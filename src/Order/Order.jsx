@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-
 import { UseFecth } from "../hook/UseFecth";
-import ImageProduct from "../assets/ProdukDetail.png";
-import { Layouts } from "../Layouts/Layouts";
 import axios from "axios";
 export const Order = () => {
   const api = import.meta.env.VITE_API;
@@ -15,19 +12,27 @@ export const Order = () => {
       newStatus = "Dipersiapkan";
       const res = await axios.patch(`${api}/order/${item.id}`, {
         status: newStatus,
-      }); 
-      setData((prev) => Array.isArray(prev) ? prev.map((p) => (p.id === item.id ? res.data : p)) : prev)
-      alert("Status berhasil diubah menjadi Dipersiapkan")
+      });
+      setData((prev) =>
+        Array.isArray(prev)
+          ? prev.map((p) => (p.id === item.id ? res.data : p))
+          : prev
+      );
+      alert("Status berhasil diubah menjadi Dipersiapkan");
     } else if (item.status === "Dipersiapkan") {
       const inputResi = prompt("Masukkan nomor resi pengiriman:");
       if (!inputResi) return; // batal
       newStatus = "Dalam Pengiriman";
-      const res =  await axios.patch(`${api}/order/${item.id}`, {
+      const res = await axios.patch(`${api}/order/${item.id}`, {
         status: newStatus,
         trackingNumber: inputResi,
       });
-      setData((prev) => Array.isArray(prev) ? prev.map((p) => (p.id === item.id ? res.data : p)) : prev)
-      alert("Status berhasil diubah menjadi Dalam Pengiriman")
+      setData((prev) =>
+        Array.isArray(prev)
+          ? prev.map((p) => (p.id === item.id ? res.data : p))
+          : prev
+      );
+      alert("Status berhasil diubah menjadi Dalam Pengiriman");
       return;
     }
   };
@@ -43,9 +48,8 @@ export const Order = () => {
   };
   console.log(Data?.data);
   return (
-    <Layouts>
-      <div className="flex space-x-3">
-        {Data?.data?.length > 0 &&
+    <div className="flex space-x-3">
+      {Data?.data?.length > 0 &&
         Data.data.map((item) => {
           const subtotal = item.produk.price * item.qty;
           const total = subtotal - item.diskon - item.ongkir;
@@ -55,20 +59,23 @@ export const Order = () => {
               className="w-fit p-6 bg-white rounded-lg space-y-4 shadow"
             >
               <div className="flex content-between ">
-                  <div  className="flex space-x-3">
-                    <img src={`http://127.0.0.1:8000/storage/${item.produk.imagebanner}`} alt="" className="w-40" />
-                    <div className="w-52 space-y-2">
-                      <p className="text-sm ">{item.produk.title}</p>
-                      <p className="text-xs text-black/50">{item.produk.size}</p>
-                      <div className="flex justify-between items-center">
-                        <p className="text-sm ">
-                          Rp {item.produk.price.toLocaleString()}
-                        </p>
-                        <p className="text-xs text-black/50">x {item.qty}</p>
-                      </div>
+                <div className="flex space-x-3">
+                  <img
+                    src={`http://127.0.0.1:8000/storage/${item.produk.imagebanner}`}
+                    alt=""
+                    className="w-40"
+                  />
+                  <div className="w-52 space-y-2">
+                    <p className="text-sm ">{item.produk.title}</p>
+                    <p className="text-xs text-black/50">{item.produk.size}</p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm ">
+                        Rp {item.produk.price.toLocaleString()}
+                      </p>
+                      <p className="text-xs text-black/50">x {item.qty}</p>
                     </div>
                   </div>
-               
+                </div>
               </div>
 
               <div className="border-t pt-3">
@@ -94,7 +101,8 @@ export const Order = () => {
                   </p>
                 )}
                 <p className="text-sm text-gray-600">
-                  Alamat: {item.addres.streetname}, {item.addres.city} {item.addres.provinci} 
+                  Alamat: {item.addres.streetname}, {item.addres.city}{" "}
+                  {item.addres.provinci}
                 </p>
                 <p className="text-sm text-gray-600">
                   Penerima: {item.addres.fullname}
@@ -123,7 +131,6 @@ export const Order = () => {
             </div>
           );
         })}
-      </div>
-    </Layouts>
+    </div>
   );
 };

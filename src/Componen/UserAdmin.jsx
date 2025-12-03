@@ -4,7 +4,7 @@ import { ProdukContext } from "../Context/ProdukProvider";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
-import { Layouts } from "../Layouts/Layouts";
+
 
 export const UserAdmin = () => {
   const { setUser } = useContext(ProdukContext);
@@ -32,7 +32,7 @@ export const UserAdmin = () => {
   };
 
   return (
-    <Layouts>
+  
       <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
         <button
           onClick={() => {
@@ -85,6 +85,6 @@ export const UserAdmin = () => {
           </tbody>
         </table>
       </div>
-    </Layouts>
+    
   );
 };

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "daisyui";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 
@@ -8,8 +9,12 @@
  --color-bg-card: #FCFBF9;
  --color-gray-secondbackground: #FDFDFD;
  --color-gray-line: #D8DBDB;
+ --color-button: #44405480;
+ --color-hover: #FE942A;
+ --color-sidebar: #FAFAFA;
  --shadow-xl-full:  0 0 20px rgba(0, 0, 0, 0.25) ;
  --shadow-normal-full:  0 0 6px rgba(0, 0, 0, 0.1) ;
+
 }
 
 body {

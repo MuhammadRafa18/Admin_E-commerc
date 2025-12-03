@@ -4,10 +4,9 @@ import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
-import { Layouts } from "../Layouts/Layouts";
 
 export const Banner = () => {
-  const { Banner, setBanner } = useContext(PagesContext);
+  const { setBanner } = useContext(PagesContext);
   const navigate = useNavigate();
   const api = import.meta.env.VITE_API;
   const { Data } = UseFecth(`${api}/banner`);
@@ -29,39 +28,42 @@ export const Banner = () => {
       }
     }
   };
-  console.log(Data.data)
+  console.log(Data.data);
   return (
-    <Layouts>
-      <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
-        <button
-          onClick={() => {
-            setBanner({});
-            navigate(`/FormBanner`);
-          }}
-          className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
-        >
-          Tambah
-        </button>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className=" text-center px-6 py-3">
-                image
-              </th>
-              <th scope="col" className=" text-center px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Data?.data?.length > 0 &&
+    <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
+      <button
+        onClick={() => {
+          setBanner({});
+          navigate(`/FormBanner`);
+        }}
+        className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
+      >
+        Tambah
+      </button>
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className=" text-center px-6 py-3">
+              image
+            </th>
+            <th scope="col" className=" text-center px-6 py-3">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Data?.data?.length > 0 &&
             Data.data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               >
                 <td className="flex justify-center items-center">
-                  <img src={`http://127.0.0.1:8000/storage/${item.banner}`} alt="" className="w-10" />
+                  <img
+                    src={`http://127.0.0.1:8000/storage/${item.banner}`}
+                    alt=""
+                    className="w-10"
+                  />
                 </td>
                 <td className="text-center px-6 py-4 space-x-3">
                   <button
@@ -79,9 +81,8 @@ export const Banner = () => {
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>  
-    </Layouts>
+        </tbody>
+      </table>
+    </div>
   );
 };

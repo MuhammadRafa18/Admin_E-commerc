@@ -4,10 +4,10 @@ import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
-import { Layouts } from "../Layouts/Layouts";
+
 
 export const Faq = () => {
-  const { setFaq} = useContext(PagesContext);
+  const { setFaq } = useContext(PagesContext);
   const navigate = useNavigate();
   const api = import.meta.env.VITE_API;
   const { Data } = UseFecth(`${api}/faq`);
@@ -23,7 +23,7 @@ export const Faq = () => {
             Authorization: `$Bearer ${token}`,
           },
         });
-        alert('Data berhasil dihapus');
+        alert("Data berhasil dihapus");
       } catch (err) {
         console.error("Hapu data gagal :", err);
         alert("hapus data gagal");
@@ -31,30 +31,29 @@ export const Faq = () => {
     }
   };
   return (
-    <Layouts>
-      <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
-        <button
-          onClick={() => {
-            setFaq({});
-            navigate(`/FormFaq`);
-          }}
-          className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
-        >
-          Tambah
-        </button>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="text-center px-6 py-3">
-                Judul
-              </th>
-              <th scope="col" className="text-center px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Data?.data?.length > 0 &&
+    <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
+      <button
+        onClick={() => {
+          setFaq({});
+          navigate(`/FormFaq`);
+        }}
+        className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
+      >
+        Tambah
+      </button>
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className="text-center px-6 py-3">
+              Judul
+            </th>
+            <th scope="col" className="text-center px-6 py-3">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Data?.data?.length > 0 &&
             Data.data.map((item) => (
               <tr
                 key={item.id}
@@ -80,9 +79,8 @@ export const Faq = () => {
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </Layouts>
+        </tbody>
+      </table>
+    </div>
   );
 };

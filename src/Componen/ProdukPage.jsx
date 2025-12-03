@@ -4,7 +4,7 @@ import { ProdukContext } from "../Context/ProdukProvider";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
-import { Layouts } from "../Layouts/Layouts";
+
 
 export const ProdukPage = () => {
   const { setProduk } = useContext(ProdukContext);
@@ -13,7 +13,7 @@ export const ProdukPage = () => {
   const { Data } = UseFecth(`${api}/produk`);
   const { token } = useContext(AuthContext);
   const HandleUpdate = (id) => {
-    navigate(`/FormProduk/${id}`);  
+    navigate(`/FormProduk/${id}`);
   };
 
   const HandleDelete = async (id) => {
@@ -31,30 +31,27 @@ export const ProdukPage = () => {
       }
     }
   };
-  // console.log(Data.data);
+
   return (
-    <Layouts>
-      <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
-        <button
-          onClick={() => {
-            setProduk({});
-            navigate(`/FormProduk`);
-          }}
-          className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
-        >
-          Tambah
-        </button>
-        <div className="overflow-x-auto w-full hide-scrollbar">
-        <table className="min-w-max text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+    <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
+      <button
+        onClick={() => {
+          setProduk({});
+          navigate(`/FormProduk`);
+        }}
+        className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
+      >
+        Tambah
+      </button>
+      <div className="w-full overflow-x-auto max-w-full hide-scrollbar">
+        <table className="min-w-max max-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th className=" text-center px-6 py-3">
-                No
-              </th>
+              <th className=" text-center px-6 py-3">No</th>
               <th scope="col" className=" text-center px-6 py-3">
                 Gambar Produk
               </th>
-               <th scope="col" className=" text-center px-6 py-3">
+              <th scope="col" className=" text-center px-6 py-3">
                 Gambar Banner
               </th>
               <th scope="col" className="text-center px-6 py-3">
@@ -94,30 +91,44 @@ export const ProdukPage = () => {
           </thead>
           <tbody>
             {Data?.data?.length > 0 &&
-              Data.data.map((item,index) => (
+              Data.data.map((item, index) => (
                 <tr
                   key={item.id}
                   className=" bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
-                > 
-                <td className="text-center px-6 py-4">
-                  {index + 1}
-                </td>
-                  <td  className="px-6 py-4 text-center">
-                    <img src={`http://localhost:8000/storage/${item.imageproduk}`} alt="" className="w-10 mx-auto" />
+                >
+                  <td className="text-center px-6 py-4">{index + 1}</td>
+                  <td className="px-6 py-4 text-center">
+                    <img
+                      src={`http://localhost:8000/storage/${item.imageproduk}`}
+                      alt=""
+                      className="w-10 mx-auto"
+                    />
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <img src={`http://localhost:8000/storage/${item.imagebanner}`} alt="" className="w-10 mx-auto" />
+                    <img
+                      src={`http://localhost:8000/storage/${item.imagebanner}`}
+                      alt=""
+                      className="w-10 mx-auto"
+                    />
                   </td>
                   <td className="text-center px-6 py-4">{item.title}</td>
-                  <td className="text-center px-6 py-4">{item.category.category}</td>
+                  <td className="text-center px-6 py-4">
+                    {item.category.category}
+                  </td>
                   <td className="text-center px-6 py-4">{item.type.type}</td>
                   <td className="text-center px-6 py-4">{item.price}</td>
                   <td className="text-center px-6 py-4">{item.size}</td>
                   <td className="text-center px-6 py-4">{item.rating}</td>
                   <td className="text-center px-6 py-4">{item.stok}</td>
-                  <td className="w-80 text-center px-6 py-4 ">{item.description}</td>
-                  <td className="w-80 text-center px-6 py-4 ">{item.useproduk}</td>
-                  <td className="w-80 text-center px-6 py-4">{item.ingredient}</td>
+                  <td className="w-80 text-center px-6 py-4 ">
+                    {item.description}
+                  </td>
+                  <td className="w-80 text-center px-6 py-4 ">
+                    {item.useproduk}
+                  </td>
+                  <td className="w-80 text-center px-6 py-4">
+                    {item.ingredient}
+                  </td>
                   <td className="text-center px-6 py-4 space-x-2">
                     <button
                       onClick={() => HandleUpdate(item.id)}
@@ -136,8 +147,7 @@ export const ProdukPage = () => {
               ))}
           </tbody>
         </table>
-        </div>
       </div>
-    </Layouts>
+    </div>
   );
 };

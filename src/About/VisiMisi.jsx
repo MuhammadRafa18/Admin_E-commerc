@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { UseFecth } from "../hook/UseFecth";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
-import { Layouts } from "../Layouts/Layouts";
+
 
 export const VisiMisi = () => {
   const { setVisiMisi } = useContext(PagesContext);
@@ -31,51 +31,54 @@ export const VisiMisi = () => {
       }
     }
   };
-  console.log(Data)
+  console.log(Data);
   return (
-    <Layouts>
-      <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
-        <button
-          onClick={() => {
-            setVisiMisi({});
-            navigate(`/FormVisiMisi`);
-          }}
-          className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
-        >
-          Tambah
-        </button>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className=" text-center px-6 py-3">
-                Image Visi Misi
-              </th>
-              <th scope="col" className=" text-center px-6 py-3">
-                Visi Misi 1
-              </th>
-              <th scope="col" className=" text-center px-6 py-3">
-                Visi Misi 2
-              </th>
-              <th scope="col" className=" text-center px-6 py-3">
-                Visi Misi 3
-              </th>
-              <th scope="col" className=" text-center px-6 py-3">
-                Visi Misi 4
-              </th>
-              <th scope="col" className=" text-center px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Data?.data?.length > 0 &&
+    <div className="flex flex-col items-end space-y-2 py-8 relative overflow-x-auto  ">
+      <button
+        onClick={() => {
+          setVisiMisi({});
+          navigate(`/FormVisiMisi`);
+        }}
+        className="w-fit bg-green-500 text-white py-2 px-5 rounded-xl cursor-pointer "
+      >
+        Tambah
+      </button>
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className=" text-center px-6 py-3">
+              Image Visi Misi
+            </th>
+            <th scope="col" className=" text-center px-6 py-3">
+              Visi Misi 1
+            </th>
+            <th scope="col" className=" text-center px-6 py-3">
+              Visi Misi 2
+            </th>
+            <th scope="col" className=" text-center px-6 py-3">
+              Visi Misi 3
+            </th>
+            <th scope="col" className=" text-center px-6 py-3">
+              Visi Misi 4
+            </th>
+            <th scope="col" className=" text-center px-6 py-3">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Data?.data?.length > 0 &&
             Data.data.map((item) => (
               <tr
                 key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               >
                 <td className="px-6 py-4 text-center">
-                  <img src={`http://127.0.0.1:8000/storage/${item.image}`} alt="" className="w-10 mx-auto" />
+                  <img
+                    src={`http://127.0.0.1:8000/storage/${item.image}`}
+                    alt=""
+                    className="w-10 mx-auto"
+                  />
                 </td>
                 <td className="text-center px-6 py-4">{item.visimisi1}</td>
                 <td className="text-center px-6 py-4">{item.visimisi2}</td>
@@ -97,9 +100,8 @@ export const VisiMisi = () => {
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </Layouts>
+        </tbody>
+      </table>
+    </div>
   );
 };
