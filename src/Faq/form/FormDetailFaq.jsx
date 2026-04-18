@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { ProdukContext } from "../../Context/ProdukProvider";
-import { AuthContext } from "../../Context/AuthContext";
-import { UseFecth } from "../../hook/UseFecth";
+import { ProdukContext } from "../../Store/ProdukProvider";
+import { AuthContext } from "../../Store/AuthContext";
+import { UseFecth } from "../../hooks/UseFecth";
 import Prev from "../../assets/panah.svg";
 import dropdown from "../../assets/panah.svg";
 import axios from "axios";

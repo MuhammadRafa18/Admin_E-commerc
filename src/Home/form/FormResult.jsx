@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { AuthContext } from "../../Context/AuthContext";
+import { AuthContext } from "../../Store/AuthContext";
 import axios from "axios";
 import Prev from "../../assets/panah.svg";
-import { PagesContext } from "../../Context/PagesProvider";
-import { UseFecth } from "../../hook/UseFecth";
+import { PagesContext } from "../../Store/PagesProvider";
+import { UseFecth } from "../../hooks/UseFecth";
 
 export const FormResult = () => {
   const { Result, setResult } = useContext(PagesContext);

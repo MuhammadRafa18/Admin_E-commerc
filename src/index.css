@@ -1,26 +1,30 @@
 @import "tailwindcss";
 @plugin "daisyui";
-@plugin "flowbite-react/plugin/tailwindcss";
+@plugin "flowbite/plugin";
 @source "../.flowbite-react/class-list.json";
 
 @theme {
- --font-sans: 'Sora', 'sans-serif';
- --color-gray-text: #7A7A7A;
- --color-bg-card: #FCFBF9;
- --color-gray-secondbackground: #FDFDFD;
- --color-gray-line: #D8DBDB;
- --color-button: #44405480;
- --color-hover: #FE942A;
- --color-sidebar: #FAFAFA;
- --shadow-xl-full:  0 0 20px rgba(0, 0, 0, 0.25) ;
- --shadow-normal-full:  0 0 6px rgba(0, 0, 0, 0.1) ;
-
+  --font-sans: "Sora", "sans-serif";
+  --color-gray-text: #7a7a7a;
+  --color-bg-card: #fcfbf9;
+  --color-gray-secondbackground: #fdfdfd;
+  --color-gray-line: #d8dbdb;
+  --color-button: #44405480;
+  --color-hover: #fe942a;
+  --color-sidebar: #fafafa;
+  --color-neutral-primary-soft: #ffffff;
+  --color-neutral-secondary-medium: #f9fafb;
+  --color-default-medium: #e5e7eb;
+  --color-heading: #111827;
+  --color-body: #6b7280;
+  --shadow-xl-full: 0 0 20px rgba(0, 0, 0, 0.25);
+  --shadow-normal-full: 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
 body {
   @apply font-sans;
 }
 .hide-scrollbar {
-  -ms-overflow-style: none; 
-  scrollbar-width: none;     
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

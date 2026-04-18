@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
-import { ProdukContext } from '../Context/ProdukProvider'
+import { ProdukContext } from '../Store/ProdukProvider'
 import { Navigate } from 'react-router';
-import { AuthContext } from '../Context/AuthContext';
+import { AuthContext } from '../Store/AuthContext';
 
 export const RouteSuperAdmin = ({children}) => {
     const {User,loading,token} =  useContext(AuthContext)
@@ -9,7 +9,7 @@ export const RouteSuperAdmin = ({children}) => {
      if (!token) {
         return <Navigate to="/login" replace />;
       }
-    if(User.role !== "SuperAdmin"){
+    if(User.role !== "super_admin"){
         return <Navigate to="/"/>
     }
 

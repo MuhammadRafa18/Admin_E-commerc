@@ -1,34 +1,27 @@
 import React, { useContext } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { ProdukPage } from '../Componen/ProdukPage'
-import { UserAdmin } from '../Componen/UserAdmin'
-import { FormProduk } from '../Componen/form/FormProduk'
-import { FormUserAdmin } from '../Componen/form/FormUserAdmin'
-import { Login } from '../Componen/auth/Login'
+import { ProdukPage } from '../Pages/ProdukPage'
+import { UserAdmin } from '../Pages/UserAdmin'
+import { FormProduk } from '../Data_Product/form/FormProduk'
+import { FormUserAdmin } from '../Data_Product/form/FormUserAdmin'
+import { Login } from '../Pages/auth/Login'
 import { RouteSuperAdmin } from './RouteSuperAdmin'
-import { Categories } from '../Componen/Categories'
-import { FormCategories } from '../Componen/form/FormCategories'
-import { FormType } from '../Componen/form/FormType'
-import { Type } from '../Componen/Type'
-import { ProdukType } from '../Home/ProdukType'
-import { FormProdukType } from '../Home/form/FormProdukType'
-import { Power } from '../About/Power'
-import { ParagrafAbout } from '../About/ParagrafAbout'
-import { VisiMisi } from '../About/VisiMisi'
-import { FormVisiMisi } from '../About/form/FormVisiMisi'
-import { FormParagrafAbout } from '../About/form/FormParagrafAbout'
-import { FormPower } from '../About/form/FormPower'
-import { Faq } from '../Faq/Faq'
+import { Categories } from '../Pages/Categories'
+import { FormCategories } from '../Data_Product/form/FormCategories'
+import { FormType } from '../Data_Product/form/FormType'
+import { Type } from '../Pages/Type'
+import { About } from '../About/About'
+import { Faq } from '../Pages/Faq'
 import { FormFaq } from '../Faq/form/FormFaq'
-import { AuthContext } from '../Context/AuthContext'
-import { DetailFaq } from '../Faq/DetailFaq'
+import { AuthContext } from '../Store/AuthContext'
+import { DetailFaq } from '../Pages/DetailFaq'
 import { FormDetailFaq } from '../Faq/form/FormDetailFaq'
-import { Banner } from '../Home/Banner'
+import { Banner } from '../Pages/Banner'
 import { FormBanner } from '../Home/form/FormBanner'
-import { Order } from '../Order/Order'
+import { Order } from '../Pages/Order'
 import { FormResult } from '../Home/form/FormResult'
-import { Result } from '../Home/Result'
-import { Home } from '../DashboardHome/Home'
+import { Result } from '../Pages/Result'
+import { Home } from '../Pages/Home'
 import PrivateRoute from './PrivateRoute'
 import { Layouts } from '../Layouts/Layouts'
 
@@ -42,13 +35,10 @@ export const MainRoute = () => {
         <Route path='/UserAdmin' element={ <RouteSuperAdmin><UserAdmin/></RouteSuperAdmin>  }/>
         <Route path='/Categories' element={ <PrivateRoute><Categories/></PrivateRoute>  } />
         <Route path='/Type' element={ <PrivateRoute><Type/></PrivateRoute> } />
-        <Route path='/ProdukType' element={ <PrivateRoute><ProdukType/></PrivateRoute> } />
         <Route path='/Banner' element={ <PrivateRoute><Banner/></PrivateRoute>} />
         <Route path='/Result' element={ <PrivateRoute><Result/></PrivateRoute>} />
         <Route path='/Order' element={<PrivateRoute><Order/></PrivateRoute>} />
-        <Route path='/Power' element={ <PrivateRoute><Power/>  </PrivateRoute>} />
-        <Route path='/VisiMisi' element={ <PrivateRoute><VisiMisi/> </PrivateRoute> } />
-        <Route path='/ParagrafAbout' element={ <PrivateRoute><ParagrafAbout/></PrivateRoute>  } />
+        <Route path='/About' element={ <PrivateRoute><About/> </PrivateRoute> } />
         <Route path='/Faq' element={ <PrivateRoute><Faq/></PrivateRoute>  } />
         <Route path='/DetailFaq' element={ <PrivateRoute><DetailFaq/></PrivateRoute>  } />
       </Route>
@@ -65,20 +55,12 @@ export const MainRoute = () => {
         <Route path='/FormType/:id' element={ <PrivateRoute><FormType/></PrivateRoute>  } />
 
         {/* Route Form Home */}
-        <Route path='/FormProdukType' element={ <PrivateRoute><FormProdukType/></PrivateRoute>   } />
-        <Route path='/FormProdukType/:id' element={ <PrivateRoute><FormProdukType/></PrivateRoute>   } />
         <Route path='/FormBanner' element={ <PrivateRoute><FormBanner/></PrivateRoute>} />
         <Route path='/FormBanner/:id' element={ <PrivateRoute><FormBanner/></PrivateRoute>} />
         <Route path='/FormResult/' element={ <PrivateRoute><FormResult/></PrivateRoute>} />
         <Route path='/FormResult/:id' element={ <PrivateRoute><FormResult/></PrivateRoute>} />
       
         {/* Route Form About */} 
-        <Route path='/FormPower' element={ <PrivateRoute><FormPower/> </PrivateRoute> } />
-        <Route path='/FormPower/:id' element={ <PrivateRoute><FormPower/> </PrivateRoute> } />
-        <Route path='/FormParagrafAbout' element={ <PrivateRoute><FormParagrafAbout/></PrivateRoute>  } />
-        <Route path='/FormParagrafAbout/:id' element={ <PrivateRoute><FormParagrafAbout/>  </PrivateRoute>} />
-        <Route path='/FormVisiMisi' element={ <PrivateRoute><FormVisiMisi/> </PrivateRoute> } />
-        <Route path='/FormVisiMisi/:id' element={ <PrivateRoute><FormVisiMisi/></PrivateRoute>  } />
         {/* Route Form Faq */}
         <Route path='/FormDetailFaq' element={ <PrivateRoute><FormDetailFaq/></PrivateRoute>  } />
         <Route path='/FormDetailFaq/:id' element={ <PrivateRoute><FormDetailFaq/></PrivateRoute>  } />
