@@ -61,7 +61,7 @@ export const FormBanner = () => {
           {id ? (
             <img
               src={`http://127.0.0.1:8000/storage/${Banner.banner}`}
-              className="w-10"
+              className="w-10"    
             />
           ) : null}
           <div>

@@ -1,47 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import Prev from "../../assets/panah.svg";
-import dropdown from "../../assets/panah.svg";
 import { Link, useNavigate, useParams } from "react-router";
 import { ProdukContext } from "../../Store/ProdukProvider";
 import axios from "axios";
-import { AuthContext } from "../../Store/AuthContext";
-import { UseFecth } from "../../hooks/UseFecth";
-export const FormCategories = () => {
+
+export const FormCategories = ({data}) => {
   const navigate = useNavigate();
   const { Categories, setCategories } = useContext(ProdukContext);
-  const { token } = useContext(AuthContext);
-  const api = import.meta.env.VITE_API;
-  const { Data } = UseFecth(`${api}/category`);
-  const { id } = useParams();
-  const findData = Data?.data?.find((item) => item.id === Number(id));
-  useEffect(() => {
-    if (id) {
-      setCategories(findData);
-    }
-  }, [id, findData]);
-
+  
   const HandleForm = async (e) => {
     e.preventDefault();
-    try {
-      const formdata = new FormData();
-      Object.entries(Categories).forEach(([keys, value]) => {
-        formdata.append(keys, value);
-      });x  
-
-      if (id) formdata.append("_method", "PUT");
-
-      const url = id ? `${api}/category/${id}` : `${api}/category`;
-      await axios.post(url, formdata, {
-        headers: {
-          Authorization: `$Bearer ${token}`,
-        },
-      });
-      alert("Add Data sukses");
-      navigate(`/Categories`);
-    } catch (err) {
-      console.error("Messages : ", err);
-      alert("Data Gagal disimpan");
-    }
+    
   };
   
   return (

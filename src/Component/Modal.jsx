@@ -6,7 +6,7 @@ export const Modal = ({ isOpen, onClose, title, children }) => {
       <div className="bg-white rounded-xl w-full max-w-xl p-4">
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-semibold">{title}</h2>
-          <button onClick={onClose}>✕</button>
+          <button className="cursor-pointer" onClick={onClose}>✕</button>
         </div>
         {children}
       </div>

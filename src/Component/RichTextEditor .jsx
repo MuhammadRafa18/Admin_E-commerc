@@ -82,9 +82,9 @@ export const RichTextEditor = ({ value, onChange }) => {
             <path
               fill="none"
               stroke="#000"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.2"
               d="M11 5h6M7 19h6m1-14l-4 14"
             />
           </svg>
@@ -104,9 +104,9 @@ export const RichTextEditor = ({ value, onChange }) => {
             <path
               fill="none"
               stroke="#000"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.2"
               d="M5 12h14m-3-5.5A4 2 0 0 0 12 5h-1a3.5 3.5 0 0 0 0 7h2a3.5 3.5 0 0 1 0 7h-1.5a4 2 0 0 1-4-1.5"
             />
           </svg>

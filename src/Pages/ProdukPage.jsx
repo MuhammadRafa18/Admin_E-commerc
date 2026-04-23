@@ -1,20 +1,19 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ProdukContext } from "../Store/ProdukProvider";
 import { UseFecth } from "../hooks/UseFecth";
 import { Table } from "../Component/Table";
-import { ButtonCreate } from "../Component/ButtonCreate";
 import { ButtonUpdate } from "../Component/ButtonUpdate";
 import { ButtonDelete } from "../Component/ButtonDelete";
 import { UseAction } from "../hooks/UseAction";
 import { ButtonToggle } from "../Component/ButtonToggle";
 import { Modal } from "../Component/Modal";
 import { FormProduk } from "../Data_Product/form/FormProduk";
+import { ButtonCreate } from "../Component/ButtonCreate";
 
 export const ProdukPage = () => {
   const { setProduk } = useContext(ProdukContext);
   const { Data } = UseFecth(`/product`);
-  const { HandleUpdate, HandleDelete, HandleToggle } = UseAction();
+  const { HandleDelete, HandleToggle } = UseAction();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
@@ -26,6 +25,7 @@ export const ProdukPage = () => {
     }
     setIsOpen(false);
   };
+
   const colums = [
     { key: "Nomor", label: "No", render: (_, index) => index + 1 },
     {
@@ -81,9 +81,14 @@ export const ProdukPage = () => {
       label: "Action",
       render: (item) => (
         <div className="flex items-center justify-center space-x-2">
-          <ButtonUpdate onClick={() => HandleUpdate("FormProduk", item.id)} />
+          <ButtonUpdate
+            onClick={() => {
+              setSelectedData(item);
+              setIsOpen(true);
+            }}
+          />
           <ButtonDelete
-            onClick={() => HandleDelete(`admin/produk/${item.id}`)}
+            onClick={() => HandleDelete(`/admin/product`, item.id)}
           />
         </div>
       ),
@@ -92,15 +97,13 @@ export const ProdukPage = () => {
 
   return (
     <div className="flex flex-col items-end space-y-4 md:space-y-6 lg:space-y-8 py-8 relative overflow-x-auto">
-      <button
+      <ButtonCreate
         onClick={() => {
-          setSelectedData(null); 
+          setSelectedData(null);
           setIsOpen(true);
         }}
-        className="px-4 py-2 bg-blue-500 text-white rounded"
-      >
-        Create Product
-      </button>
+        text={"Create Product"}
+      />
 
       <Table colums={colums} Data={Data} filters={["skincare", "fashion"]} />
       <Modal
