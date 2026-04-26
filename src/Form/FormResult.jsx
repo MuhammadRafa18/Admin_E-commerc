@@ -1,26 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { AuthContext } from "../../Store/AuthContext";
-import axios from "axios";
-import Prev from "../../assets/panah.svg";
-import { PagesContext } from "../../Store/PagesProvider";
-import { UseFecth } from "../../hooks/UseFecth";
+import Prev from "../assets/panah.svg";
+import { PagesContext } from "../Store/PagesProvider";
+import { UseFecth } from "../hooks/UseFecth";
 
 export const FormResult = () => {
   const { Result, setResult } = useContext(PagesContext);
   const [image, setimage] = useState(null);
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const { token } = useContext(AuthContext);
-  const api = import.meta.env.VITE_API;
-  const { Data } = UseFecth(`${api}/result`);
-  const finData = Data?.data?.find((item) => item.id === Number(id));
+ 
 
-  useEffect(() => {
-    if (finData) {
-      setResult(finData);
-    }
-  }, [id, finData]);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;

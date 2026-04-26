@@ -1,30 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
-import { ProdukContext } from "../../Store/ProdukProvider";
-import { AuthContext } from "../../Store/AuthContext";
-import { UseFecth } from "../../hooks/UseFecth";
-import Prev from "../../assets/panah.svg";
-import dropdown from "../../assets/panah.svg";
-import axios from "axios";
+import { Link } from "react-router";
+import { UseFecth } from "../hooks/UseFecth";
+import Prev from "../assets/panah.svg";
+import dropdown from "../assets/panah.svg";
+
 
 export const FormDetailFaq = () => {
-  const navigate = useNavigate();
-  const { DetailFaq, setDetailFaq } = useContext(ProdukContext);
-  const [SelectFaq, setSelectFaq] = useState();
-  const api = import.meta.env.VITE_API;
-  const { Data: Faq } = UseFecth(`${api}/faq`);
-  const { Data } = UseFecth(`${api}/detailfaq`);
-  const { id } = useParams();
-  const { token } = useContext(AuthContext);
-  const finData = Data?.data?.find((item) => item.id === Number(id));
-  useEffect(() => {
-    if (finData) {
-      setDetailFaq({
-        ...finData,
-        faq_id: finData?.faq?.id
-      });
-    }
-  }, [id, finData]);
+
+  const { Data: Faq } = UseFecth(`/faq`);
+  const { Data } = UseFecth(`/detailfaq`);
+
 
   const HandleForm = async (e) => {
     e.preventDefault();

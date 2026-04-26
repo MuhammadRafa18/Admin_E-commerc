@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
-import { RichTextEditor } from "../../Component/RichTextEditor ";
-import { UseAction } from "../../hooks/UseAction";
-import { UseFecth } from "../../hooks/UseFecth";
-import { InputImage } from "../../Component/InputImage";
-import { ButtonDelete } from "../../Component/ButtonDelete";
-import { MultiSelect } from "../../Component/MultiSelect";
-import { InputText } from "../../Component/InputText";
-import { InputSelect } from "../../Component/InputSelect";
-import { InputNominal } from "../../Component/InputNominal";
+import { useState } from "react";
+import { RichTextEditor } from "../Component/RichTextEditor ";
+import { UseAction } from "../hooks/UseAction";
+import { UseFecth } from "../hooks/UseFecth";
+import { InputImage } from "../Component/InputImage";
+import { ButtonDelete } from "../Component/ButtonDelete";
+import { MultiSelect } from "../Component/MultiSelect";
+import { InputText } from "../Component/InputText";
+import { InputSelect } from "../Component/InputSelect";
+import { InputNominal } from "../Component/InputNominal";
 
 export const FormProduk = ({ data, onSuccess, onClose }) => {
-  const { handleSubmit } = UseAction();
+  const { handleSubmit, loading } = UseAction();
   const { Data: category } = UseFecth(`/category`);
   const { Data: skintype } = UseFecth(`/SkinTypes`);
-
+  const detail = data?.product_sku?.detail;
+  const isFashion = data?.category?.type === "fashion";
   const [form, setForm] = useState({
     title: data?.title ?? "",
     category_id: data?.category?.id ?? "",
@@ -29,13 +30,14 @@ export const FormProduk = ({ data, onSuccess, onClose }) => {
     skin_type_id:
       data?.skin_type?.map((s) => ({ id: s.id, name: s.type })) ?? [],
     variants:
-      data?.product_sku?.detail?.map((v) => ({
-        id: v.id,
-        color: v.color,
-        size: v.size,
-      })) ?? [],
+      isFashion && Array.isArray(detail)
+        ? detail.map((v) => ({ id: v.id, color: v.color, size: v.size }))
+        : [],
   });
-  
+  const [imageError, setImageError] = useState({
+    image_produk: false,
+    image_banner: false,
+  });
   const [files, setFiles] = useState({
     image_produk: null,
     image_banner: null,
@@ -43,6 +45,14 @@ export const FormProduk = ({ data, onSuccess, onClose }) => {
 
   const HandleForm = async (e) => {
     e.preventDefault();
+    if (!data) {
+      const errors = {
+        image: !files.image,
+      };
+      setImageError(errors);
+
+      if (Object.values(errors).some(Boolean)) return;
+    }
     await handleSubmit({
       endpoint: "/admin/product",
       data: form,
@@ -61,7 +71,11 @@ export const FormProduk = ({ data, onSuccess, onClose }) => {
   };
   const set = (key) => (e) => setForm({ ...form, [key]: e.target?.value ?? e });
   const categoryOptions =
-    category?.data?.map((c) => ({ value: c.id, label: c.category , type: c.type })) ?? [];
+    category?.data?.map((c) => ({
+      value: c.id,
+      label: c.category,
+      type: c.type,
+    })) ?? [];
   const SkinTypeOptions =
     skintype?.data?.map((c) => ({
       id: c.id,
@@ -72,18 +86,28 @@ export const FormProduk = ({ data, onSuccess, onClose }) => {
     <>
       <form
         onSubmit={HandleForm}
-        className="space-y-4 max-h-[75vh] overflow-y-auto px-1.5 hide-scrollbar"
+        className="space-y-4 max-h-[75vh] py-3 overflow-y-auto px-1.5 hide-scrollbar"
       >
         <InputImage
           label="Image Product"
           id="image_produk"
-          onChange={(file) => setFiles({ ...files, image_produk: file })}
+          required={!data}
+          hasError={imageError.image_produk}
+          onChange={(file) => {
+            setFiles({ ...files, image_produk: file });
+            setImageError({ ...imageError, image_produk: false });
+          }}
         />
 
         <InputImage
           label="Image Banner"
           id="image_banner"
-          onChange={(file) => setFiles({ ...files, image_banner: file })}
+          required={!data}
+          hasError={imageError.image_banner}
+          onChange={(file) => {
+            setFiles({ ...files, image_banner: file });
+            setImageError({ ...imageError, image_banner: false });
+          }}
         />
 
         {/* Title & Category */}
@@ -112,7 +136,7 @@ export const FormProduk = ({ data, onSuccess, onClose }) => {
         {/* SKU */}
         <div className="flex gap-3 ">
           <InputNominal
-           Rp="Rp"
+            Rp="Rp"
             label="Price"
             value={form.price}
             onChange={set("price")}
@@ -245,9 +269,10 @@ export const FormProduk = ({ data, onSuccess, onClose }) => {
         )}
 
         {/* Buttons */}
-        <div className="flex gap-3 pt-2">
+        <div className="flex gap-3 pt-2 ">
           <button
             type="submit"
+            disabled={loading}
             className="flex-1 bg-black text-white py-2 rounded-full text-sm cursor-pointer"
           >
             {data ? "Update" : "Simpan"}

@@ -1,37 +1,33 @@
-import axios from "axios";
-import React, {  useContext, useEffect, useState } from "react";
-import { AuthContext } from "../Store/AuthContext";
+import React, { useContext, useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
 
 export const UseFecth = (url) => {
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { token } = useContext (AuthContext) 
+  const [reload, setReload] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
     const FetchData = async () => {
-      if (url) {
-        try {
-          const res = await axiosInstance.get(url, {
-            signal: controller.signal,
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          setLoading(false);
-          setData(res.data);
-        } catch (err) {
-          setLoading(false);
-          console.error("Requset Data gagal", err.message);
-        }
+      if (!url) return;
+      setLoading(true);
+      try {
+        const res = await axiosInstance.get(url, {
+          signal: controller.signal,
+        });
+        setLoading(false);
+        setData(res.data);
+      } catch (err) {
+        setLoading(false);
+        console.error("Requset Data gagal", err.message);
+      } finally {
+        setLoading(false);
       }
     };
     FetchData();
     return () => {
       controller.abort();
     };
-  }, [url]);
-
-  return { Data,setData};
+  }, [url, reload]);
+  const refetch = () => setReload((prev) => prev + 1);
+  return { Data, setData, refetch };
 };

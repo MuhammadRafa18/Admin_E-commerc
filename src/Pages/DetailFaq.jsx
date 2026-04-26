@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router";
 import { UseFecth } from "../hooks/UseFecth";
-import { ProdukContext } from "../Store/ProdukProvider";
+
 import { ButtonCreate } from "../Component/ButtonCreate";
 import { Table } from "../Component/Table";
 import { ButtonUpdate } from "../Component/ButtonUpdate";
@@ -10,7 +10,7 @@ import { UseAction } from "../hooks/UseAction";
 
 export const DetailFaq = () => {
   const navigate = useNavigate();
-  const { setDetailFaq } = useContext(ProdukContext);
+
   const { Data } = UseFecth(`/DetailFaq`);
   const { HandleDelete, HandleUpdate } = UseAction();
   const colums = [

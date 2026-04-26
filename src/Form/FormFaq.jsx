@@ -1,24 +1,13 @@
-import React, { useContext, useEffect } from "react";
-import { PagesContext } from "../../Store/PagesProvider";
-import { Link, useNavigate, useParams } from "react-router";
-import Prev from "../../assets/panah.svg";
+import React, { useContext } from "react";
+import { PagesContext } from "../Store/PagesProvider";
+import { Link } from "react-router";
+import Prev from "../assets/panah.svg";
 import axios from "axios";
-import { AuthContext } from "../../Store/AuthContext";
-import { UseFecth } from "../../hooks/UseFecth";
+import { UseFecth } from "../hooks/UseFecth";
 
 export const FormFaq = () => {
   const { Faq, setFaq } = useContext(PagesContext);
-  const navigate = useNavigate();
-  const api = import.meta.env.VITE_API;
-  const { Data } = UseFecth(`${api}/faq`);
-  const { id } = useParams();
-  const { token } = useContext(AuthContext);
-  const finData = Data?.data?.find((item) => item.id === Number(id));
-  useEffect(() => {
-    if (finData) {
-      setFaq(finData);
-    }
-  }, [id, finData]);
+  const { Data } = UseFecth(`/faq`);
   const HandleForm = async (e) => {
     e.preventDefault();
     try {

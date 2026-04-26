@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PagesContext } from "../../Store/PagesProvider";
-import Prev from "../../assets/panah.svg";
-import { AuthContext } from "../../Store/AuthContext";
+import { PagesContext } from "../Store/PagesProvider";
+import Prev from "../assets/panah.svg";
+import { AuthContext } from "../Store/AuthContext";
 import { Link, useNavigate, useParams } from "react-router";
 import axios from "axios";
-import { UseFecth } from "../../hooks/UseFecth";
+import { UseFecth } from "../hooks/UseFecth";
 
 export const FormBanner = () => {
   const { Banner, setBanner } = useContext(PagesContext);

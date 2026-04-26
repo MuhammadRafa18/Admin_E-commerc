@@ -3,7 +3,7 @@ export const ButtonToggle = ({ isActive, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className={`relative inline-flex items-center w-11 h-6 rounded-full transition-colors duration-300 focus:outline-none
+      className={`relative inline-flex items-center w-11 h-6 rounded-full transition-colors duration-300 focus:outline-none cursor-pointer
                 ${isActive ? "bg-blue-500" : "bg-gray-300"}`}
     >
       <span

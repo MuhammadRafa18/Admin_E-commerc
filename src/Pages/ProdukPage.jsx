@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { ProdukContext } from "../Store/ProdukProvider";
 import { UseFecth } from "../hooks/UseFecth";
 import { Table } from "../Component/Table";
 import { ButtonUpdate } from "../Component/ButtonUpdate";
@@ -7,24 +6,16 @@ import { ButtonDelete } from "../Component/ButtonDelete";
 import { UseAction } from "../hooks/UseAction";
 import { ButtonToggle } from "../Component/ButtonToggle";
 import { Modal } from "../Component/Modal";
-import { FormProduk } from "../Data_Product/form/FormProduk";
+import { FormProduk } from "../Form/FormProduk";
 import { ButtonCreate } from "../Component/ButtonCreate";
+import { PagesContext } from "../Store/PagesProvider";
 
 export const ProdukPage = () => {
-  const { setProduk } = useContext(ProdukContext);
-  const { Data } = UseFecth(`/product`);
+  const { Data, refetch } = UseFecth(`/product`);
   const { HandleDelete, HandleToggle } = UseAction();
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedData, setSelectedData] = useState(null);
+  const { isOpen, setIsOpen, selectedData, setSelectedData } =
+    useContext(PagesContext);
 
-  const handleSubmit = (form) => {
-    if (selectedData) {
-      console.log("UPDATE", selectedData.id, form);
-    } else {
-      console.log("CREATE", form);
-    }
-    setIsOpen(false);
-  };
 
   const colums = [
     { key: "Nomor", label: "No", render: (_, index) => index + 1 },
@@ -70,7 +61,7 @@ export const ProdukPage = () => {
         <ButtonToggle
           isActive={item.is_active}
           onClick={() =>
-            HandleToggle(`/admin/product`, item.id, item.is_active, setProduk)
+            HandleToggle(`/admin/product`, item.id, item.is_active, refetch)
           }
         />
       ),
@@ -88,7 +79,7 @@ export const ProdukPage = () => {
             }}
           />
           <ButtonDelete
-            onClick={() => HandleDelete(`/admin/product`, item.id)}
+            onClick={() => HandleDelete(`/admin/product`, item.id, refetch)}
           />
         </div>
       ),
@@ -111,7 +102,14 @@ export const ProdukPage = () => {
         onClose={() => setIsOpen(false)}
         title={selectedData ? "Edit Produk" : "Create Produk"}
       >
-        <FormProduk data={selectedData} onSubmit={handleSubmit} />
+        <FormProduk
+          data={selectedData}
+          onClose={() => setIsOpen(false)}
+          onSuccess={() => {
+            setIsOpen(false);
+            refetch();
+          }}
+        />
       </Modal>
     </div>
   );
