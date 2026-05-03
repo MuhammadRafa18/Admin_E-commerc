@@ -7,25 +7,25 @@ export const UseAction = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const getErrorMessage = (errObj) => {
-  if (!errObj) return null;
+    if (!errObj) return null;
 
-  if (typeof errObj === "string") return errObj;
+    if (typeof errObj === "string") return errObj;
 
-  if (Array.isArray(errObj)) {
-    return getErrorMessage(errObj[0]);
-  }
+    if (Array.isArray(errObj)) {
+      return getErrorMessage(errObj[0]);
+    }
 
-  if (typeof errObj === "object") {
-    return getErrorMessage(Object.values(errObj)[0]);
-  }
-
-  return null;
-};
+    if (typeof errObj === "object") {
+      return getErrorMessage(Object.values(errObj)[0]);
+    }
+    return null;
+  };
   const handleSubmit = async ({
     endpoint,
-    data,
+    data = {},
     files = {},
     variants = [],
+    powers = [],
     skin_types = [],
     id = null,
     onSuccess,
@@ -53,6 +53,15 @@ export const UseAction = () => {
           if (variant.id) formData.append(`variants[${index}][id]`, variant.id);
           formData.append(`variants[${index}][size]`, variant.size ?? "");
           formData.append(`variants[${index}][color]`, variant.color ?? "");
+        });
+      }
+      if (Array.isArray(powers) && powers.length > 0) {
+        powers.forEach((power, index) => {
+          if (power.id) formData.append(`powers[${index}][id]`, power.id);
+          formData.append(`powers[${index}][label]`, power.label ?? "");
+          if (power.icon instanceof File) {
+            formData.append(`powers[${index}][icon]`, power.icon);
+          }
         });
       }
 

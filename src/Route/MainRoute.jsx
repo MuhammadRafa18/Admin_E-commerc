@@ -13,14 +13,6 @@ import { Home } from '../Pages/Home'
 import { About } from '../Pages/About'
 import { Faq } from '../Pages/Faq'
 import { DetailFaq } from '../Pages/DetailFaq'
-import { FormProduk } from '../Form/FormProduk'
-import { FormUserAdmin } from '../Form/FormUserAdmin'
-import { FormCategories } from '../Form/FormCategories'
-import { FormType } from '../Form/FormType'
-import { FormBanner } from '../Form/FormBanner'
-import { FormResult } from '../Form/FormResult'
-import { FormDetailFaq } from '../Form/FormDetailFaq'
-import { FormFaq } from '../Form/FormFaq'
 import { Login } from '../Pages/auth/Login'
 import { RouteSuperAdmin } from './RouteSuperAdmin'
 import { AuthContext } from '../Store/AuthContext'
@@ -44,21 +36,6 @@ export const MainRoute = () => {
         <Route path='/DetailFaq' element={ <PrivateRoute><DetailFaq/></PrivateRoute>  } />
       </Route>
 
-   
-        {/* Route Form Data */}
-        <Route path='/FormProduk' element={ <PrivateRoute><FormProduk/></PrivateRoute> } />
-        <Route path='/FormUserAdmin' element={ <RouteSuperAdmin><FormUserAdmin/></RouteSuperAdmin>  } />
-        <Route path='/FormCategories' element={ <PrivateRoute><FormCategories/></PrivateRoute> } />
-        <Route path='/FormType' element={ <PrivateRoute><FormType/></PrivateRoute>  } />
-
-
-        {/* Route Form Home */}
-        <Route path='/FormBanner' element={ <PrivateRoute><FormBanner/></PrivateRoute>} />
-        <Route path='/FormResult/' element={ <PrivateRoute><FormResult/></PrivateRoute>} />
-      
-        {/* Route Form Faq */}
-        <Route path='/FormDetailFaq' element={ <PrivateRoute><FormDetailFaq/></PrivateRoute>  } />
-        <Route path='/FormFaq' element={ <PrivateRoute><FormFaq/></PrivateRoute>  } />
         
         {/* Route Login */}
         <Route path='/Login' element={ token ? <Navigate to="/"/>  :  <Login/> }/>

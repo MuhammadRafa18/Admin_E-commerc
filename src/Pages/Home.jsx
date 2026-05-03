@@ -19,10 +19,10 @@ export const Home = () => {
     const fetchData = async () => {
       try {
         const [orders, users] = await Promise.all([
-          axios.get(`${api}/order`, {
+          axios.get(`${api}/admin/order`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get(`${api}/DataUser`, {
+          axios.get(`${api}/admin/DataUser`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);

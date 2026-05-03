@@ -7,11 +7,13 @@ import { ButtonDelete } from "../Component/ButtonDelete";
 import { Table } from "../Component/Table";
 import { UseAction } from "../hooks/UseAction";
 import { ButtonCreate } from "../Component/ButtonCreate";
+import { Modal } from "../Component/Modal";
+import { FormResult } from "../Form/FormResult";
 
 export const Result = () => {
-  const { setResult } = useContext(PagesContext);
-  const navigate = useNavigate();
-  const { Data } = UseFecth(`/result`);
+  const { isOpen, setIsOpen, selectedData, setSelectedData } =
+    useContext(PagesContext);
+  const { Data, refetch } = UseFecth(`/result`);
   const { HandleDelete, HandleUpdate } = UseAction();
   const colums = [
     {
@@ -30,9 +32,14 @@ export const Result = () => {
       label: "Action",
       render: (item) => (
         <div className="flex items-center justify-center space-x-2">
-          <ButtonUpdate onClick={() => HandleUpdate("FormType", item.id)} />
+          <ButtonUpdate
+            onClick={() => {
+              setSelectedData(item);
+              setIsOpen(true);
+            }}
+          />
           <ButtonDelete
-            onClick={() => HandleDelete(`admin/result, ${item.id}`)}
+            onClick={() => HandleDelete(`admin/result`, item.id, refetch)}
           />
         </div>
       ),
@@ -44,11 +51,25 @@ export const Result = () => {
       <ButtonCreate
         text={"Create result"}
         onClick={() => {
-          setResult({});
-          navigate(`/FormProduk`);
+          setSelectedData(null);
+          setIsOpen(true);
         }}
       ></ButtonCreate>
       <Table colums={colums} Data={Data}></Table>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title={selectedData ? "Edit Result" : "Create Result"}
+      >
+        <FormResult
+          data={selectedData}
+          onClose={() => setIsOpen(false)}
+          onSuccess={() => {
+            setIsOpen(false);
+            refetch();
+          }}
+        />
+      </Modal>
     </div>
   );
 };

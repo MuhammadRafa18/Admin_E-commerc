@@ -79,7 +79,7 @@ export const CategoryCart = () => {
             <span className="text-sm">{item}</span>
           </div>
           <span className="text-xs">
-            Rp {data?.datasets[0]?.data[index].toLocaleString()}
+            Rp {data?.datasets[0]?.data[index]?.toLocaleString()}
           </span>
         </div>
       ))}
