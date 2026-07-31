@@ -17,6 +17,7 @@ export const DetailFaq = () => {
   const stripHtml = (html) => html?.replace(/<[^>]*>/g, "") ?? "-";
   const { HandleDelete, HandleUpdate } = UseAction();
   const colums = [
+    
     {
       key: "faq_category",
       label: "category ",

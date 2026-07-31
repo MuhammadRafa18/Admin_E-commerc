@@ -6,18 +6,22 @@ import { ButtonDelete } from "../Component/ButtonDelete";
 import { UseAction } from "../hooks/UseAction";
 import { ButtonToggle } from "../Component/ButtonToggle";
 import { PagesContext } from "../Store/PagesProvider";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Modal } from "../Component/Modal";
 import { FormCategories } from "../Form/FormCategories";
 
 export const Categories = () => {
-  const { Data, refetch } = UseFecth(`/category`);
+  const [page, setPage] = useState(1);
+  const { Data, refetch } = UseFecth(`/category?page=${page}`);
   const { isOpen, setIsOpen, selectedData, setSelectedData } =
     useContext(PagesContext);
-  const { HandleUpdate, HandleDelete, HandleToggle } =
-    UseAction();
+  const { HandleUpdate, HandleDelete, HandleToggle } = UseAction();
   const colums = [
-    { key: "Nomor", label: "No", render: (_, index) => index + 1 },
+    {
+      key: "Nomor",
+      label: "No",
+      render: (_, index) => (Data?.meta?.from || 1) + index,
+    },
     { key: "category", label: "Category" },
     { key: "type", label: "type" },
     {
@@ -59,7 +63,7 @@ export const Categories = () => {
           setIsOpen(true);
         }}
       />
-      <Table colums={colums} Data={Data} />
+      <Table colums={colums} Data={Data} page={page} setPage={setPage} />
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

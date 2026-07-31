@@ -27,7 +27,7 @@ export const Navbar = () => {
   return (
     <>
       <header className=" relative z-50">
-        <div className="px-10 py-3 flex justify-between items-center">
+        <div className="px-10 py-6 flex justify-between items-center shadow-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -55,7 +55,7 @@ export const Navbar = () => {
                   className="w-8 rounded cursor-pointer"
                 />
                 <div className="flex flex-col text-xs">
-                  <span className="font-semibold">Rafa</span>
+                  <span className="font-semibold">{User?.name}</span>
                   <span>{User?.role}</span>
                 </div>
                 <svg
@@ -82,7 +82,7 @@ export const Navbar = () => {
                     backgroundImage: `linear-gradient(to right, rgba(14, 165, 233, 0.6), rgba(14, 165, 233, 0.6)), url(${city})`,
                   }}
                 >
-                  <div className="flex items-start space-x-2 text-white ">
+                  <div className="flex items-start space-x-2 text-white  ">
                     <img
                       src={profil}
                       alt="account"

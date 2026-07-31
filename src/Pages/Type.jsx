@@ -6,16 +6,22 @@ import { ButtonUpdate } from "../Component/ButtonUpdate";
 import { ButtonDelete } from "../Component/ButtonDelete";
 import { UseAction } from "../hooks/UseAction";
 import { PagesContext } from "../Store/PagesProvider";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Modal } from "../Component/Modal";
 import { FormType } from "../Form/FormType";
 
 export const Type = () => {
-  const { Data, refetch } = UseFecth(`/SkinTypes`);
+    const [page, setPage] = useState(1);
+  const { Data, refetch } = UseFecth(`/SkinTypes?page=${page}`);
   const { isOpen, setIsOpen, selectedData, setSelectedData } =
     useContext(PagesContext);
   const { HandleUpdate, HandleDelete } = UseAction();
   const colums = [
+    {
+      key: "Nomor",
+      label: "No",
+      render: (_, index) => (Data?.meta?.from || 1) + index,
+    },
     { key: "type", label: "Type" },
     {
       key: "image",
@@ -55,7 +61,7 @@ export const Type = () => {
           setIsOpen(true);
         }}
       />
-      <Table colums={colums} Data={Data} />
+      <Table colums={colums} Data={Data} page={page} setPage={setPage}/>
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

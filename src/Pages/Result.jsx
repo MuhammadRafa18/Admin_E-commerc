@@ -16,6 +16,11 @@ export const Result = () => {
   const { Data, refetch } = UseFecth(`/result`);
   const { HandleDelete, HandleUpdate } = UseAction();
   const colums = [
+     {
+      key: "Nomor",
+      label: "No",
+      render: (_, index) => (Data?.meta?.from || 1) + index,
+    },
     {
       key: "result",
       label: "result",

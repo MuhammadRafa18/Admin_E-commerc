@@ -14,8 +14,14 @@ export const Banner = () => {
   const { isOpen, setIsOpen, selectedData, setSelectedData } =
     useContext(PagesContext);
   const { Data, refetch } = UseFecth(`/banner`);
+ 
   const { HandleDelete } = UseAction();
   const colums = [
+    {
+      key: "Nomor",
+      label: "No",
+      render: (_, index) => (Data?.meta?.from || 1) + index,
+    },
     {
       key: "banner",
       label: "banner",

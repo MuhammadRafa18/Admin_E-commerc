@@ -11,14 +11,18 @@ import { ButtonCreate } from "../Component/ButtonCreate";
 import { PagesContext } from "../Store/PagesProvider";
 
 export const ProdukPage = () => {
-  const { Data, refetch } = UseFecth(`/product`);
+  const [page, setPage] = useState(1);
+  const { Data, refetch } = UseFecth(`/product?page=${page}`);
   const { HandleDelete, HandleToggle } = UseAction();
   const { isOpen, setIsOpen, selectedData, setSelectedData } =
     useContext(PagesContext);
-
-
+  console.log(Data);
   const colums = [
-    { key: "Nomor", label: "No", render: (_, index) => index + 1 },
+    {
+      key: "Nomor",
+      label: "No",
+      render: (_, index) => (Data?.meta?.from || 1) + index,
+    },
     {
       key: "image_banner",
       label: "Image Banner",
@@ -96,7 +100,13 @@ export const ProdukPage = () => {
         text={"Create Product"}
       />
 
-      <Table colums={colums} Data={Data} filters={["skincare", "fashion"]} />
+      <Table
+        colums={colums}
+        Data={Data}
+        filters={["skincare", "fashion"]}
+        page={page}
+        setPage={setPage}
+      />
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

@@ -14,7 +14,7 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
 });
 
-// Response interceptor — tangkap 401
+
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {

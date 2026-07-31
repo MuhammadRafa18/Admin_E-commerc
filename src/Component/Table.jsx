@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-export const Table = ({ colums, Data, filters }) => {
+export const Table = ({ colums, Data, filters, page, setPage }) => {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
@@ -99,6 +99,27 @@ export const Table = ({ colums, Data, filters }) => {
             )}
           </tbody>
         </table>
+      </div>
+      <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+        <button
+          onClick={() => setPage((prev) => prev - 1)}
+          disabled={!Data?.links?.prev}
+          className="px-4 py-2 rounded-lg border hover:opacity-35 cursor-pointer"
+        >
+          Prev
+        </button>
+
+        <span className="text-sm">
+          Halaman {Data?.meta?.current_page} dari {Data?.meta?.last_page}
+        </span>
+
+        <button
+          onClick={() => setPage((prev) => prev + 1)}
+          disabled={!Data?.links?.next}
+          className="px-4 py-2 rounded-lg border hover:opacity-35 cursor-pointer"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

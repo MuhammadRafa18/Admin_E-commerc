@@ -19,17 +19,17 @@ export const UserAdmin = () => {
     { key: "email", label: "email" },
     { key: "name", label: "name" },
     { key: "role", label: "role" },
-    {
-      key: "profile_image",
-      label: "profile image",
-      render: (item) => (
-        <img
-          src={`http://localhost:8000/storage/${item.profile_image}`}
-          alt=""
-          className="w-10 mx-auto"
-        />
-      ),
-    },
+    // {
+    //   key: "profile_image",
+    //   label: "profile image",
+    //   render: (item) => (
+    //     <img
+    //       src={`http://localhost:8000/storage/${item.profile_image}`}
+    //       alt=""
+    //       className="w-10 mx-auto"
+    //     />
+    //   ),
+    // },
     {
       key: "Actions",
       label: "Action",
